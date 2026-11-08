@@ -10,7 +10,7 @@ def test_still_time_from_start_and_end():
     x[30:60, 1] = np.linspace(0, 50, 30)
     x[60:, 1] = 50
     assert still_time(x, 30.0) == 32 / 30  # frame 32 is the first more than 2 deg away (3.4 deg)
-    assert still_time(x, 30.0, from_end=True) == 31 / 30  # frames 59..89 sit at 50; frame 58 at 48.3
+    assert still_time(x, 30.0, from_end=True) == 32 / 30  # frames 58..89 within 2 deg of 50; 57 is 46.6
 
 
 def test_best_lag_recovers_a_known_delay():
