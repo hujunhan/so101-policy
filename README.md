@@ -12,7 +12,7 @@ teleoperated demonstrations and measures how well learned policies do it:
 
 Deliverable: a video, a results table and a failure analysis.
 
-> **Status (2026-11-07):** repository set up; the session plan below is a draft to agree in the first session.
+> **Status (2026-11-08):** repository set up; session plan agreed. Next: S1, the task and the evaluation protocol.
 
 ## What M2 hands over
 
@@ -29,7 +29,7 @@ From [so101-calib](https://github.com/hujunhan/so101-calib) (README, "Handed to 
 - **Accuracy**: near the calibrated region ~1-2 mm per error term; far poses several mm off (cause open).
   Learned policies close the loop through the cameras, so this matters less here than for M5.
 
-## Plan (draft, to be agreed)
+## Plan
 
 | Session | Content | Output |
 |---|---|---|
