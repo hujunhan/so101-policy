@@ -25,6 +25,7 @@ hw = [
 
 [project.scripts]
 so101-record = "so101_policy.record:main"
+so101-check-dataset = "so101_policy.check_dataset:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6"]
