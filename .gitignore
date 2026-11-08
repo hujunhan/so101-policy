@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+*.rrd
+wandb/
+# raw camera captures and demonstration videos may show people or the room; commit only reviewed, cropped media
+captures/
+videos/
+# datasets and training outputs are large: they live outside git (LeRobot cache, Hugging Face Hub, outputs/)
+data/
+outputs/
+checkpoints/
