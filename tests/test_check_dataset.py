@@ -45,3 +45,12 @@ def test_replay_trims_still_time_and_predicts_lag():
     assert (i0, i1) == (104 - 15, 300 - 104 + 15)  # 0.606 deg per frame: 4 frames to pass 2 deg
     path = np.radians(x)  # 60 deg over 100 commands at 30 Hz: 18 deg/s
     assert np.isclose(predicted_lag_deg(path, 30.0, 0.1)[1], 1.8, atol=0.05)
+
+
+def test_offline_eval_chunk_errors_stop_at_the_episode_end():
+    from so101_policy.offline_eval import chunk_errors
+
+    actions = np.arange(20, dtype=float)[:, None] * np.ones((1, 6))
+    pred = actions[15:20] + 1.0  # a 5-step chunk at t=15, off by 1
+    assert np.allclose(chunk_errors(pred, actions, 15), 1.0)
+    assert chunk_errors(np.zeros((10, 6)), actions, 15).shape == (5, 6)  # only 5 frames left
