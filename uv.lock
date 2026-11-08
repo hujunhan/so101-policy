@@ -2790,7 +2790,7 @@ wheels = [
 [[package]]
 name = "so101-calib"
 version = "0.1.0"
-source = { git = "https://github.com/hujunhan/so101-calib?rev=c5b2ccdd115f3b8dcdf8bc71d618d368b6fcd758#c5b2ccdd115f3b8dcdf8bc71d618d368b6fcd758" }
+source = { git = "https://github.com/hujunhan/so101-calib?rev=57f1add31c3c7f740f77457b65f1b0fc9d31f50f#57f1add31c3c7f740f77457b65f1b0fc9d31f50f" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
@@ -2861,7 +2861,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "scipy", specifier = ">=1.11" },
-    { name = "so101-calib", git = "https://github.com/hujunhan/so101-calib?rev=c5b2ccdd115f3b8dcdf8bc71d618d368b6fcd758" },
+    { name = "so101-calib", git = "https://github.com/hujunhan/so101-calib?rev=57f1add31c3c7f740f77457b65f1b0fc9d31f50f" },
     { name = "so101-core", git = "https://github.com/hujunhan/so101-core?rev=534b1e91f488768ea92d1f92bbf6cc3459d00bb7" },
     { name = "so101-core", extras = ["hw"], marker = "extra == 'hw'", git = "https://github.com/hujunhan/so101-core?rev=534b1e91f488768ea92d1f92bbf6cc3459d00bb7" },
 ]
