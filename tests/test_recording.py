@@ -137,3 +137,17 @@ def test_log_tee_masks_serials_and_keeps_the_last_redraw():
     assert "ABC123XYZ" in term.getvalue()  # the terminal shows everything
     assert file.getvalue().splitlines() == ["port /dev/serial/by-id/usb-1a86_USB_Single_Serial_<SERIAL>-if00",
                                             "progress 100%"]  # fmt: skip
+
+
+def test_rollout_helpers():
+    from so101_policy.rollout import RunLog, parse_map, summarize
+
+    assert parse_map("zed=up,wrist=side") == {"zed": "up", "wrist": "side"}
+    assert parse_map(None) == {}
+    log = RunLog()
+    for i in range(30):
+        log.t.append(i / 30)
+        log.policy_ms.append(50.0 if i % 10 == 0 else 5.0)
+        log.frame_age_ms.append({"zed": 20.0})
+    text = summarize(log, 30.0)
+    assert "30 ticks" in text and "3 ticks over the budget" in text and "frame age zed" in text

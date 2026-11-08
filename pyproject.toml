@@ -21,7 +21,7 @@ hw = [
     "so101-core[hw] @ git+https://github.com/hujunhan/so101-core@534b1e91f488768ea92d1f92bbf6cc3459d00bb7",
     # Recording and training extras (datasets, video, rerun display, accelerate). The commit must match
     # so101-core's pin.
-    "lerobot[dataset,viz,training] @ git+https://github.com/huggingface/lerobot@f5c9bc02137c331b009eccd44ece6f11b62187a8",
+    "lerobot[dataset,viz,training,smolvla] @ git+https://github.com/huggingface/lerobot@f5c9bc02137c331b009eccd44ece6f11b62187a8",
 ]
 
 [project.scripts]
@@ -29,6 +29,7 @@ so101-record = "so101_policy.record:main"
 so101-check-dataset = "so101_policy.check_dataset:main"
 so101-replay = "so101_policy.replay:main"
 so101-offline-eval = "so101_policy.offline_eval:main"
+so101-rollout = "so101_policy.rollout:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6"]
