@@ -142,7 +142,8 @@ def main(argv: list[str] | None = None) -> None:
         "\nStand at the arm with the power switch in reach. Clear the workspace (or put the object where it"
         "\nwas at the start of the episode)."
     )
-    if input("Type yes to start: ").strip() != "yes":
+    print("Type yes to start: ", end="", flush=True)  # printed, so the prompt is in the log too
+    if input().strip() != "yes":
         print("Not started.")
         return
 

@@ -13,7 +13,10 @@ teleoperated demonstrations and measures how well learned policies do it:
 Deliverable: a video, a results table and a failure analysis.
 
 > **Status (2026-11-08):** S1 done: the task (one cube into a fixed bowl) and the pre-registered evaluation
-> protocol ([docs/PROTOCOL.md](docs/PROTOCOL.md)). Next: S2, the recording pipeline.
+> protocol ([docs/PROTOCOL.md](docs/PROTOCOL.md)). S2 pipeline working: `so101-record` (LeRobot record, ZED left eye
+> at FHD with a crop, wrist camera, start-pose check), `so101-check-dataset`, `so101-replay` (a slow replay through
+> SafeArm repeats the recorded states within ~0.4 deg median). Waiting for the light box: the ZED crop, the camera
+> settings and PROTOCOL section 7.
 
 ## What M2 hands over
 

@@ -14,7 +14,12 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   in docs/PROTOCOL.md (30 trials, seeded list protocol/eval_states.csv, Wilson + exact McNemar). Its section 7
   (region, bowl, start pose, cameras, gain, time limit) is filled in once the workspace exists and S2 dry runs
   are done.
-- **Next:** S2, the recording pipeline (LeRobot record, ZED FHD crop + wrist camera, placement overlay).
+- 2026-11-08: S2 pipeline working (`so101-record`, `so101-check-dataset`, `so101-replay`; dry-run dataset in
+  git-ignored `data/local__so101_s2_dry`). Run output is tee'd to git-ignored `logs/`: read the newest log there
+  instead of asking the user to paste. Light box materials (table, foam board, Neewer GC10B, black desk mat)
+  being bought.
+- **Next:** placement overlay and the ZED hand-eye re-run script (both before the box arrives); S4 on a public
+  dataset. After the box: ZED crop, lock camera exposure/white balance, PROTOCOL section 7.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key
