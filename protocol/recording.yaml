@@ -1,0 +1,32 @@
+# Recording settings: cameras, servo gain, rate. Used by `so101-record`, and the same values must be used at
+# evaluation (docs/PROTOCOL.md: "camera settings and servo gain as in the demonstrations").
+# Device paths come from so101-core's git-ignored config/devices.yaml (SO101_CONFIG_DIR).
+#
+# Status: S2 draft. The ZED crop, the output sizes, the white balance and the gain are fixed after the
+# workspace is rebuilt and recorded in DECISIONS.md before the first demonstration.
+
+fps: 30
+
+follower:
+  # LeRobot default P = 16; M2 ran at 32 (half the sag). Open decision, see DECISIONS.md.
+  p_gain: 16
+  # LeRobot caps each commanded step (degrees) relative to the present position. Normal teleoperation at
+  # 30 Hz stays far below this; it limits the jump if the leader starts far from the follower.
+  max_relative_target: 10.0
+
+cameras:
+  zed:
+    # ZED 2 over UVC, FHD per eye: 3840x1080 side by side, YUYV only. Left eye, then crop and resize.
+    capture: [3840, 1080]
+    fourcc: YUYV
+    crop: null            # [x, y, w, h] in left-eye pixels; null = the whole eye (draft)
+    out_size: [960, 540]  # draft
+    v4l2:
+      power_line_frequency: 2   # 60 Hz mains (the factory default is 50 Hz: banding under US lighting)
+  wrist:
+    capture: [1280, 720]  # M2's wrist intrinsics are at 1280x720
+    fourcc: MJPG
+    # No resize here (LeRobot's OpenCV camera cannot); the policy resizes at training time.
+    v4l2:
+      power_line_frequency: 2
+      exposure_dynamic_framerate: 0  # otherwise the camera drops below 30 fps in dim light
