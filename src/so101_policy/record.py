@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 from pathlib import Path
 
 import yaml
+
+from so101_policy.runlog import mask_serials
 
 REPO = Path(__file__).resolve().parents[2]
 SETTINGS = REPO / "protocol" / "recording.yaml"
@@ -129,12 +130,6 @@ def read_start_poses(devices) -> tuple[dict[str, float], dict[str, float]]:
     return readings[0], readings[1]
 
 
-def mask_serials(text: str) -> str:
-    """Hide adapter and camera serial numbers before printing (the repo and its logs are public)."""
-    text = re.sub(r"(USB_Single_Serial_)[^-\s\"']+", r"\1<SERIAL>", text)
-    return re.sub(r"(Camera_)[0-9A-Za-z]{6,}", r"\1<SERIAL>", text)
-
-
 def apply_v4l2(device: str, controls: dict[str, int]) -> list[str]:
     """Set V4L2 controls and read them back. Returns a list of problems (empty if all applied)."""
     problems = []
@@ -180,6 +175,11 @@ def main(argv: list[str] | None = None) -> None:
     settings = load_settings()
     cmd = lerobot_args(settings, devices, args) + extra
 
+    if not args.dry:
+        from so101_policy import runlog
+
+        log = runlog.start("record", argv)
+        print(f"Log: {log}")
     print("lerobot-record \\\n  " + " \\\n  ".join(mask_serials(a) for a in cmd))
     if args.dry:
         return

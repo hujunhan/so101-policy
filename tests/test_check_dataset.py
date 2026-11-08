@@ -20,3 +20,16 @@ def test_best_lag_recovers_a_known_delay():
     lag, err = best_lag(action, state)
     assert lag == 4
     assert np.allclose(err, 0.5, atol=1e-6)
+
+
+def test_replay_resample_slows_down_and_keeps_the_ends():
+    import pytest
+
+    from so101_policy.replay import resample
+
+    x = np.stack([np.linspace(0, 29, 30)] * 6, axis=1)  # 1 s at 30 fps
+    y = resample(x, fps=30.0, rate_hz=30.0, speed=0.5)
+    assert len(y) == 59  # 0 .. 1.933 s of play time covers the 0.967 s recording
+    assert y[0, 0] == 0 and y[-1, 0] == 29 and np.allclose(np.diff(y[:, 0]), 0.5)
+    with pytest.raises(ValueError):
+        resample(x, 30.0, 30.0, speed=1.5)

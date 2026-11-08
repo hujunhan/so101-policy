@@ -123,3 +123,17 @@ def test_start_pose_check_names_the_far_joints():
     far = pose_differences(leader, follower, max_deg=15.0, max_grip=20.0)
     assert [j for j, _, _ in far] == ["wrist_roll", "gripper"]
     assert pose_differences(leader, leader, 15.0, 20.0) == []
+
+
+def test_log_tee_masks_serials_and_keeps_the_last_redraw():
+    import io
+
+    from so101_policy.runlog import _Tee
+
+    term, file = io.StringIO(), io.StringIO()
+    tee = _Tee(term, file)
+    tee.write("port /dev/serial/by-id/usb-1a86_USB_Single_Serial_ABC123XYZ-if00\n")
+    tee.write("progress 10%\rprogress 50%\rprogress 100%\npartial")
+    assert "ABC123XYZ" in term.getvalue()  # the terminal shows everything
+    assert file.getvalue().splitlines() == ["port /dev/serial/by-id/usb-1a86_USB_Single_Serial_<SERIAL>-if00",
+                                            "progress 100%"]  # fmt: skip
