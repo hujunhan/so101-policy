@@ -12,7 +12,8 @@ teleoperated demonstrations and measures how well learned policies do it:
 
 Deliverable: a video, a results table and a failure analysis.
 
-> **Status (2026-11-08):** repository set up; session plan agreed. Next: S1, the task and the evaluation protocol.
+> **Status (2026-11-08):** S1 done: the task (one cube into a fixed bowl) and the pre-registered evaluation
+> protocol ([docs/PROTOCOL.md](docs/PROTOCOL.md)). Next: S2, the recording pipeline.
 
 ## What M2 hands over
 

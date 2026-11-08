@@ -10,7 +10,11 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - The user is rebuilding the workspace (light box, backdrop; materials still to buy). Data collection and
   evaluation wait for it; task choice, the protocol, the recording pipeline and training on a public dataset do
   not.
-- **Next:** agree the session plan in README (a draft), then S1: the task and the evaluation protocol.
+- 2026-11-08: plan agreed; GitHub repo created (public). S1 done: task = one cube into a fixed bowl; protocol
+  in docs/PROTOCOL.md (30 trials, seeded list protocol/eval_states.csv, Wilson + exact McNemar). Its section 7
+  (region, bowl, start pose, cameras, gain, time limit) is filled in once the workspace exists and S2 dry runs
+  are done.
+- **Next:** S2, the recording pipeline (LeRobot record, ZED FHD crop + wrist camera, placement overlay).
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key

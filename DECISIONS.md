@@ -4,8 +4,6 @@ Each entry: date, what was decided, why, and the options that were weighed.
 
 ## Open (to decide in S1)
 
-- **The evaluation protocol**: number of trials, how initial states are drawn, the success criterion, the
-  statistics (confidence intervals), the failure taxonomy; fixed and committed before any policy runs.
 - **Cameras for the policy**: ZED left eye at FHD with a fixed crop, the wrist camera, or both; resolution and
   frame rate.
 - **Recording**: LeRobot's own `lerobot-record` with the leader arm, or a thin wrapper through so101-core;
@@ -35,3 +33,28 @@ protocol and the rebuilt workspace.
 - *Stacking one cube on another*: tests precision, but "stable stack" is less clear-cut and the classical
   pipeline in M5 would suffer from the few-mm errors far from the calibrated region.
 - *Colour sorting into two boxes*: richer, but each demonstration and trial takes about twice as long.
+
+## 2026-11-08: The evaluation protocol
+
+**Decided** (full text in [docs/PROTOCOL.md](docs/PROTOCOL.md)):
+- **30 trials** per policy and condition.
+- **Initial states from a seeded random list** (seed 20261108, uniform position in the region, yaw in
+  [0, 90) deg), committed as `protocol/eval_states.csv`; the same list for every policy and condition in M3,
+  M4 and M5.
+- **Time limit by rule**: 3 x the median duration of S2's dry-run demonstrations, fixed before any policy runs.
+- **Statistics**: 95 % Wilson interval per rate; exact McNemar test for paired comparisons.
+- **Discipline**: final checkpoint, no retries, voids only for faults outside the policy, a fixed failure
+  taxonomy labelled from video (first thing that went wrong).
+
+**Why:**
+- *30 trials*: about +/-14 points at 80 % success (20 gives +/-17, 50 gives +/-11). M4 runs six camera
+  conditions, so 50 per condition would be close to 6 hours of trials for 3 points of width.
+- *A shared random list*: random draws do not line up with habits from the demonstrations, as a regular grid
+  might; using the same list everywhere makes comparisons paired, and the paired test only looks at trials where
+  the two policies disagree, so it detects a real difference with fewer trials.
+- *Time limit by rule*: the demonstrations' length is not known yet; fixing the rule now and the number before
+  the first policy run keeps it independent of how the policies behave.
+- *Final checkpoint*: choosing the checkpoint on the evaluation list would overstate the success rate.
+
+**Options weighed:** 20 or 50 trials; a fixed 5 x 6 grid of positions (easier to place, but regular); a fixed
+time limit set now (e.g. 60 s).
