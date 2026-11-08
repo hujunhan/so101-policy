@@ -161,7 +161,10 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--task", default=TASK)
     p.add_argument("--episodes", type=int, default=3)
     p.add_argument("--episode-time", type=float, default=30.0, help="seconds per episode")
-    p.add_argument("--reset-time", type=float, default=15.0, help="seconds to reset between episodes")
+    p.add_argument(
+        "--reset-time", type=float, default=120.0,
+        help="longest reset between episodes (s); press n to start the next episode sooner",
+    )  # fmt: skip
     p.add_argument("--display", action="store_true", help="show cameras and joints in rerun")
     p.add_argument("--resume", action="store_true", help="append to an existing dataset")
     p.add_argument("--dry", action="store_true", help="print the LeRobot command and exit")
@@ -203,7 +206,9 @@ def main(argv: list[str] | None = None) -> None:
     print(
         "\nThe follower will copy the leader, also during the reset phase. While an episode is saved the\n"
         "follower holds still; wait for 'Recording episode' before moving on.\n"
-        "Keys in this terminal: n = end the episode early, r = redo it, q = stop recording.\n"
+        "Keys in this terminal: n = end the episode (during the reset: start the next one), r = redo the\n"
+        "episode, q = stop recording.\n"
+        "Each episode: start pose -> pick -> place -> back to the start pose -> n.\n"
     )
     sys.argv = ["lerobot-record", *cmd]
     lerobot_record.main()
