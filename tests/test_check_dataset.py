@@ -33,3 +33,15 @@ def test_replay_resample_slows_down_and_keeps_the_ends():
     assert y[0, 0] == 0 and y[-1, 0] == 29 and np.allclose(np.diff(y[:, 0]), 0.5)
     with pytest.raises(ValueError):
         resample(x, 30.0, 30.0, speed=1.5)
+
+
+def test_replay_trims_still_time_and_predicts_lag():
+    from so101_policy.replay import active_span, predicted_lag_deg
+
+    x = np.zeros((300, 6))
+    x[100:200, 1] = np.linspace(0, 60, 100)
+    x[200:, 1] = 60
+    i0, i1 = active_span(x, fps=30.0, pad_s=0.5)
+    assert (i0, i1) == (104 - 15, 300 - 104 + 15)  # 0.606 deg per frame: 4 frames to pass 2 deg
+    path = np.radians(x)  # 60 deg over 100 commands at 30 Hz: 18 deg/s
+    assert np.isclose(predicted_lag_deg(path, 30.0, 0.1)[1], 1.8, atol=0.05)
