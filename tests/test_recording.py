@@ -113,3 +113,13 @@ def test_serials_are_masked():
     masked = mask_serials(text)
     assert "ABC123XYZ" not in masked and "123456789012" not in masked
     assert masked.count("<SERIAL>") == 2
+
+
+def test_start_pose_check_names_the_far_joints():
+    from so101_policy.record import pose_differences
+
+    leader = {"wrist_roll": 65.1, "elbow_flex": 90.0, "gripper": 30.0}
+    follower = {"wrist_roll": -92.3, "elbow_flex": 85.0, "gripper": 5.0}
+    far = pose_differences(leader, follower, max_deg=15.0, max_grip=20.0)
+    assert [j for j, _, _ in far] == ["wrist_roll", "gripper"]
+    assert pose_differences(leader, leader, 15.0, 20.0) == []

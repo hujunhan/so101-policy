@@ -6,6 +6,9 @@
 # workspace is rebuilt and recorded in DECISIONS.md before the first demonstration.
 
 fps: 30
+# Encode video while recording, so saving an episode takes ~no time (otherwise the follower stands still
+# for the whole AV1 encode after each reset phase).
+streaming_encoding: true
 
 follower:
   # LeRobot default P = 16; M2 ran at 32 (half the sag). Open decision, see DECISIONS.md.

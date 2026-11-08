@@ -6,11 +6,30 @@ Each entry: date, what was decided, why, and the options that were weighed.
 
 - **Cameras for the policy**: ZED left eye at FHD with a fixed crop, the wrist camera, or both; resolution and
   frame rate.
-- **Recording**: LeRobot's own `lerobot-record` with the leader arm, or a thin wrapper through so101-core;
-  where the dataset lives (Hugging Face Hub, public or private; local).
+- **Where the dataset lives**: Hugging Face Hub (public or private) or local only.
 - **LeRobot version and policy extras**: the pin comes from so101-core; SmolVLA may need a newer LeRobot and
   extras.
 - **The servo gain** for recording and evaluation: M2 ran at P = 32 (half the sag); LeRobot's default is 16.
+
+## 2026-11-08: Record through `so101-record`, a thin wrapper around `lerobot-record`
+
+**Decided:** demonstrations are recorded with LeRobot's own record loop (leader arm, LeRobot dataset format),
+started through `so101-record`. The wrapper fills in the command from so101-core's `devices.yaml` and the
+committed `protocol/recording.yaml` (cameras, crop, V4L2 controls, servo gain, step cap), registers a "zed"
+camera type (left eye of the side-by-side stream, fixed crop, resize), checks that the leader is in the
+follower's pose before starting, and syncs the follower's goal to its present position.
+
+**Why:**
+- The dataset is in LeRobot's standard format, so ACT and SmolVLA train on it without conversion.
+- The protocol requires the same camera settings and gain at evaluation; one committed settings file
+  instead of a 20-argument command typed by hand makes that checkable.
+- LeRobot's OpenCV camera cannot crop, and its follower `connect()` can jump to a stale goal (M0 findings);
+  both are handled in the wrapper without changing LeRobot.
+
+**Options weighed:**
+- *Plain `lerobot-record`*: no code to maintain, but long commands, no ZED crop, no start-pose check.
+- *A recording loop of our own through `SafeArm`*: full control, but rewrites what LeRobot already does
+  (dataset writing, video encoding, keyboard control) and risks a non-standard dataset.
 
 ## 2026-11-08: The task is one cube into a fixed bowl
 

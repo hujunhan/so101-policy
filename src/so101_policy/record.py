@@ -81,10 +81,52 @@ def lerobot_args(settings: dict, devices, args: argparse.Namespace) -> list[str]
         f"--dataset.num_episodes={args.episodes}",
         f"--dataset.episode_time_s={args.episode_time}",
         f"--dataset.reset_time_s={args.reset_time}",
+        f"--dataset.streaming_encoding={'true' if settings.get('streaming_encoding', True) else 'false'}",
         "--dataset.push_to_hub=false",
         f"--display_data={'true' if args.display else 'false'}",
         f"--resume={'true' if args.resume else 'false'}",
     ]
+
+
+def pose_differences(leader: dict[str, float], follower: dict[str, float], max_deg: float, max_grip: float):
+    """Joints where the leader and the follower differ by more than the limit: [(joint, leader, follower)].
+
+    Readings are LeRobot's (degrees; the gripper in % of its range)."""
+    out = []
+    for joint, lv in leader.items():
+        fv = follower[joint]
+        limit = max_grip if joint == "gripper" else max_deg
+        if abs(lv - fv) > limit:
+            out.append((joint, lv, fv))
+    return out
+
+
+def read_start_poses(devices) -> tuple[dict[str, float], dict[str, float]]:
+    """Read both arms without changing torque, and set the follower's goal to its present position.
+
+    LeRobot's follower connect() enables torque without syncing the goal first: a goal left over from an
+    earlier session would make the arm jump (so101-core, M0 findings). Writing goal = present here, with
+    the torque untouched, removes that. Returns (leader, follower) readings.
+    """
+    from lerobot.robots.so_follower import SO101Follower, SO101FollowerConfig
+    from lerobot.teleoperators.so_leader import SO101Leader, SO101LeaderConfig
+
+    follower = SO101Follower(SO101FollowerConfig(port=devices.follower_port, id=devices.robot_id))
+    leader = SO101Leader(SO101LeaderConfig(port=devices.leader_port, id=devices.teleop_id))
+    readings = []
+    for dev in (leader, follower):
+        bus = dev.bus
+        bus.connect()
+        try:
+            if not bus.is_calibrated:
+                raise RuntimeError(f"{dev} calibration does not match its LeRobot calibration file.")
+            readings.append(bus.sync_read("Present_Position", num_retry=3))
+            if dev is follower:
+                raw = bus.sync_read("Present_Position", normalize=False, num_retry=3)
+                bus.sync_write("Goal_Position", raw, normalize=False)
+        finally:
+            bus.disconnect(disable_torque=False)  # leave the torque as it was
+    return readings[0], readings[1]
 
 
 def mask_serials(text: str) -> str:
@@ -123,6 +165,10 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--display", action="store_true", help="show cameras and joints in rerun")
     p.add_argument("--resume", action="store_true", help="append to an existing dataset")
     p.add_argument("--dry", action="store_true", help="print the LeRobot command and exit")
+    p.add_argument(
+        "--max-start-diff", type=float, default=15.0,
+        help="refuse to start if a joint of the leader and the follower differ by more (deg; gripper %%)",
+    )  # fmt: skip
     args = p.parse_args(argv)
 
     from so101_core.config import DeviceConfig
@@ -140,12 +186,23 @@ def main(argv: list[str] | None = None) -> None:
         for msg in problems:
             print(f"WARNING {name}: {msg}")
 
+    leader, follower = read_start_poses(devices)
+    far = pose_differences(leader, follower, args.max_start_diff, args.max_start_diff)
+    if far:
+        print("\nThe leader is not in the follower's pose; the follower would jump. Move the leader:")
+        for joint, lv, fv in far:
+            print(f"  {joint:14s} leader {lv:7.1f}  follower {fv:7.1f}  -> move the leader by {fv - lv:+.1f}")
+        print("Then run the command again.")
+        sys.exit(1)
+    print(f"Start pose check passed (every joint within {args.max_start_diff:g}).")
+
     from lerobot.scripts import lerobot_record
 
     import so101_policy.zed_camera  # noqa: F401  (registers camera type "zed")
 
     print(
-        "\nThe follower will copy the leader. Put the leader in the same pose as the follower first.\n"
+        "\nThe follower will copy the leader, also during the reset phase. While an episode is saved the\n"
+        "follower holds still; wait for 'Recording episode' before moving on.\n"
         "Keys in this terminal: n = end the episode early, r = redo it, q = stop recording.\n"
     )
     sys.argv = ["lerobot-record", *cmd]
