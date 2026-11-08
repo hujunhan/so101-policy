@@ -20,8 +20,11 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   being bought.
 - 2026-11-08: ZED re-location written in so101-calib (`so101-handeye relocate`, run from the so101-calib
   directory; pin bumped). Placement overlay deferred until S5 (the user to choose overlay vs template).
-- **Next:** S4 on a public dataset (the user agreed to hear the plan; not started). After the box: relocate the
-  ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7.
+- 2026-11-08: S4 dry run on lerobot/svla_so101_pickplace done (README section; checkpoints in git-ignored
+  outputs/train/s4_public_act). Training recipe proposed to the user (batch 8, bf16, 20-30k steps, eval_split
+  0.1): not yet confirmed or recorded in DECISIONS.
+- **Next:** after the box: relocate the ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7,
+  then S3 (collect 50-100 demonstrations).
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key

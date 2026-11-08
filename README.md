@@ -12,11 +12,10 @@ teleoperated demonstrations and measures how well learned policies do it:
 
 Deliverable: a video, a results table and a failure analysis.
 
-> **Status (2026-11-08):** S1 done: the task (one cube into a fixed bowl) and the pre-registered evaluation
-> protocol ([docs/PROTOCOL.md](docs/PROTOCOL.md)). S2 pipeline working: `so101-record` (LeRobot record, ZED left eye
-> at FHD with a crop, wrist camera, start-pose check), `so101-check-dataset`, `so101-replay` (a slow replay through
-> SafeArm repeats the recorded states within ~0.4 deg median). Waiting for the light box: the ZED crop, the camera
-> settings and PROTOCOL section 7.
+> **Status (2026-11-08):** S1 done (task, pre-registered protocol). S2 pipeline working (`so101-record`,
+> `so101-check-dataset`, `so101-replay`). S4 dry run on a public dataset done: ACT trains in ~2 h for 30k steps;
+> 20k steps were enough there. Waiting for the light box: relocate the ZED (`so101-handeye relocate`), the ZED
+> crop, the camera settings and PROTOCOL section 7, then S3.
 
 ## What M2 hands over
 
@@ -47,6 +46,34 @@ From [so101-calib](https://github.com/hujunhan/so101-calib) (README, "Handed to 
 
 S1, S2 and S4 (on a public dataset) can start before the environment is rebuilt; S3 and the evaluations need
 the final environment, because policies are sensitive to background and lighting.
+
+## S4 dry run on a public dataset (2026-11-08)
+
+ACT (LeRobot defaults: chunk 100, ResNet18, CVAE) on `lerobot/svla_so101_pickplace` (50 SO-101 pick-and-place
+episodes, two 640 x 480 cameras), the last 5 episodes held out. Batch 8, bf16 mixed precision, 30k steps
+(~23 epochs): 1 h 54 min on the RTX 3080 Laptop, 0.22 s per step (0.29 s in fp32), 3.6 GB of GPU memory;
+data loading is not the bottleneck (0.003 s per step).
+
+- **Training loss keeps falling** (L1 0.28 at 2k steps, 0.09 at 30k); **the held-out loss is flat from 2k
+  steps on** (0.36 -> 0.34). With 45 demonstrations most of what the later steps learn does not carry over to
+  new episodes. (The two are not directly comparable: training uses the CVAE's latent from the true actions,
+  held-out uses the zero latent as at deployment.)
+- **Open-loop action error on the held-out episodes** (`so101-offline-eval`; mean over the actions a deployed
+  policy would execute, deg; gripper %), against "hold still" (predict the current state):
+
+  | Checkpoint | pan | lift | elbow | wrist flex | wrist roll | gripper |
+  |---|---:|---:|---:|---:|---:|---:|
+  | hold still | 51.4 | 25.3 | 21.5 | 10.2 | 22.7 | 9.4 |
+  | 10k steps | 28.2 | 15.6 | 11.5 | 6.9 | 11.4 | 4.7 |
+  | 20k steps | 24.4 | 12.5 | 10.4 | 6.4 | 9.6 | 3.9 |
+  | 30k steps | 26.0 | 12.4 | 10.1 | 6.3 | 9.8 | 3.8 |
+
+  10k -> 20k helps by 10-20 %; 20k -> 30k does not (within the noise of 5 episodes). The predicted motion has
+  the right shape (reach, grasp, lift, place, return), and much of the remaining error is **timing**: the
+  policy starts about 1 s before a demonstrator who waited 2 s. Open-loop error is a check of training, not of
+  task success: on the arm the policy reacts to what it sees.
+- For our recordings: start moving soon after "Recording episode" and stop soon after returning, so the
+  demonstrations do not teach a random wait.
 
 ## Hardware
 
