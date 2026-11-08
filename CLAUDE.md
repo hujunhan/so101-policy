@@ -18,8 +18,10 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   git-ignored `data/local__so101_s2_dry`). Run output is tee'd to git-ignored `logs/`: read the newest log there
   instead of asking the user to paste. Light box materials (table, foam board, Neewer GC10B, black desk mat)
   being bought.
-- **Next:** placement overlay and the ZED hand-eye re-run script (both before the box arrives); S4 on a public
-  dataset. After the box: ZED crop, lock camera exposure/white balance, PROTOCOL section 7.
+- 2026-11-08: ZED re-location written in so101-calib (`so101-handeye relocate`, run from the so101-calib
+  directory; pin bumped). Placement overlay deferred until S5 (the user to choose overlay vs template).
+- **Next:** S4 on a public dataset (the user agreed to hear the plan; not started). After the box: relocate the
+  ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key
