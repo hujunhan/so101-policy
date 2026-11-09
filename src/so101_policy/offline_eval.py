@@ -49,11 +49,12 @@ def episode_predictions(policy, pre, post, ds, task: str, stride: int, device: s
     """Chunks predicted every `stride` frames of one episode. Returns (frames t, chunks (n, K, joints))."""
     import torch
 
-    feats = list(policy.config.input_features)
     ts, chunks = [], []
     for t in range(0, len(ds), stride):
         item = ds[t]
-        batch = {k: item[k].unsqueeze(0) for k in feats}
+        # observations by their dataset names; the preprocessor renames them if the policy wants other names
+        batch = {k: v.unsqueeze(0) for k, v in item.items()
+                 if k == "observation.state" or k.startswith("observation.images.")}  # fmt: skip
         batch["task"] = [task]
         with torch.inference_mode(), torch.autocast(device_type="cuda", dtype=torch.bfloat16):
             obs = pre(batch)

@@ -31,19 +31,24 @@ from so101_policy.record import apply_v4l2, camera_configs, load_settings
 REPO = Path(__file__).resolve().parents[2]
 
 
-def training_task(checkpoint: Path) -> str:
-    """The language instruction the policy was trained with: the first task of its training dataset."""
+def training_meta(checkpoint: Path):
+    """Metadata of the dataset the policy was trained on (None if unknown or not available locally)."""
     cfg_path = checkpoint / "train_config.json"
     if not cfg_path.exists():
-        return ""
+        return None
     ds = json.loads(cfg_path.read_text()).get("dataset", {})
     try:
         from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
 
-        meta = LeRobotDatasetMetadata(ds["repo_id"], root=ds.get("root"))
-        return str(meta.tasks.index[0])
+        return LeRobotDatasetMetadata(ds["repo_id"], root=ds.get("root"))
     except Exception:
-        return ""
+        return None
+
+
+def training_task(checkpoint: Path) -> str:
+    """The language instruction the policy was trained with: the first task of its training dataset."""
+    meta = training_meta(checkpoint)
+    return "" if meta is None else str(meta.tasks.index[0])
 
 
 class PolicyRunner:
@@ -54,10 +59,14 @@ class PolicyRunner:
 
         self.policy, self.pre, self.post = load_policy(checkpoint, device)
         self.camera_map = camera_map or {}  # our camera name -> the policy's (for policies trained elsewhere)
-        self.image_keys = [
+        # The cameras of the training dataset, by their dataset names: the preprocessor renames them if the
+        # policy calls them something else (SmolVLA: camera1, camera2; it pads the cameras it declares but
+        # was not trained with). Without the dataset, the policy's own image inputs.
+        meta = training_meta(checkpoint)
+        self.image_keys = list(meta.camera_keys) if meta is not None else [
             k for k in self.policy.config.input_features if k.startswith("observation.images.")
-        ]
-        self.task = training_task(checkpoint)
+        ]  # fmt: skip
+        self.task = "" if meta is None else str(meta.tasks.index[0])
 
     def warm_up(self, state: np.ndarray, images: dict[str, np.ndarray], task: str) -> float:
         """One call before the first tick (CUDA kernels load on the first call: ~0.7 s). Returns its ms."""

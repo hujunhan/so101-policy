@@ -14,7 +14,7 @@ Deliverable: a video, a results table and a failure analysis.
 
 > **Status (2026-11-08):** S1 done (task, pre-registered protocol). S2 pipeline working (`so101-record`,
 > `so101-check-dataset`, `so101-replay`). S4 dry run on a public dataset done: ACT trains in ~2 h for 30k steps;
-> 20k steps were enough there. Waiting for the light box: relocate the ZED (`so101-handeye relocate`), the ZED
+> 20k steps were enough there; SmolVLA fine-tunes in ~3 h and matches ACT offline. Waiting for the light box: relocate the ZED (`so101-handeye relocate`), the ZED
 > crop, the camera settings and PROTOCOL section 7, then S3.
 
 ## What M2 hands over
@@ -74,6 +74,37 @@ data loading is not the bottleneck (0.003 s per step).
   task success: on the arm the policy reacts to what it sees.
 - For our recordings: start moving soon after "Recording episode" and stop soon after returning, so the
   demonstrations do not teach a random wait.
+
+### SmolVLA on the same data (2026-11-08)
+
+SmolVLA (`lerobot/smolvla_base`, 450M parameters; the vision-language model frozen, the 100M action expert
+trained; chunk 50) fine-tuned with the same LeRobot pin as ACT (the `smolvla` extra; no newer LeRobot needed).
+The two cameras are renamed to the base model's `camera1` (up) and `camera2` (side), with one empty camera.
+
+- **Speed**: ~17 samples/s at any batch size (half of ACT); batch 8 uses 3.4 GB, 32 uses 9.8 GB, 64 runs out
+  of memory. The common recipe (batch 64, 20k steps) would take ~21 h here; this run: batch 32, 6000 steps
+  (~18 epochs), 3 h 11 min.
+- **Held-out loss** (flow matching; not comparable with ACT's L1) is lowest at 2k steps (0.24) and rises to
+  0.30 at 6k while the training loss keeps falling (0.13 -> 0.08): overfitting by this measure.
+- **Open-loop action error** on the same held-out episodes, by how far ahead the action is (deg; gripper %).
+  SmolVLA executes 50 actions per chunk and ACT 100, so the "executed" numbers are not comparable; per horizon
+  they are:
+
+  | Ahead | Policy | pan | lift | elbow | wrist flex | wrist roll | gripper |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | 10 frames | ACT 20k | 8.0 | 6.0 | 4.5 | 4.4 | 3.7 | 2.2 |
+  | | SmolVLA 4k | 6.5 | 4.8 | 4.0 | 3.7 | 2.8 | 1.7 |
+  | 25 frames | ACT 20k | 14.4 | 9.0 | 6.9 | 5.4 | 6.3 | 2.7 |
+  | | SmolVLA 4k | 15.7 | 7.9 | 6.5 | 5.5 | 6.9 | 2.7 |
+  | 50 frames | ACT 20k | 20.8 | 13.0 | 9.7 | 7.1 | 9.3 | 4.0 |
+  | | SmolVLA 4k | 18.4 | 14.4 | 11.1 | 7.1 | 9.8 | 4.3 |
+
+  About the same as ACT; 2k, 4k and 6k steps differ by less than the noise of 5 episodes beyond 10 frames
+  ahead, although the held-out loss rose. Offline numbers cannot rank the two: S5/S6 on the arm will.
+- **Inference** (RTX 3080 Laptop, our image sizes): a new SmolVLA chunk takes 190 ms (10 flow-matching
+  steps), ACT 32 ms; the other ticks take 6-8 ms. At 30 Hz a synchronous SmolVLA loop stalls ~6 ticks every
+  50 (the arm holds its last command for 0.2 s every 1.7 s). Options for S6: LeRobot's asynchronous inference
+  (compute the next chunk while the current one runs), fewer flow-matching steps, or accept the pause.
 
 ## Hardware
 

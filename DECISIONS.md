@@ -7,8 +7,6 @@ Each entry: date, what was decided, why, and the options that were weighed.
 - **Cameras for the policy**: ZED left eye at FHD with a fixed crop, the wrist camera, or both; resolution and
   frame rate.
 - **Where the dataset lives**: Hugging Face Hub (public or private) or local only.
-- **LeRobot version and policy extras**: the pin comes from so101-core; SmolVLA may need a newer LeRobot and
-  extras.
 - **The servo gain** for recording and evaluation: M2 ran at P = 32 (half the sag); LeRobot's default is 16.
 
 ## 2026-11-08: Record through `so101-record`, a thin wrapper around `lerobot-record`

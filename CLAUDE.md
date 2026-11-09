@@ -23,6 +23,9 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-08: S4 dry run on lerobot/svla_so101_pickplace done (README section; checkpoints in git-ignored
   outputs/train/s4_public_act). Training recipe proposed to the user (batch 8, bf16, 20-30k steps, eval_split
   0.1): not yet confirmed or recorded in DECISIONS.
+- 2026-11-08: SmolVLA dry run done (README; outputs/train/s6_public_smolvla): ~3 h, matches ACT offline, 190 ms per
+  new chunk. `so101-rollout` written; shadow-tested with ACT. Open for the user: start pose vs safety limits,
+  rollout step cap (recommended 4 deg/tick).
 - **Next:** after the box: relocate the ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7,
   then S3 (collect 50-100 demonstrations).
 
