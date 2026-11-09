@@ -30,6 +30,7 @@ so101-check-dataset = "so101_policy.check_dataset:main"
 so101-replay = "so101_policy.replay:main"
 so101-offline-eval = "so101_policy.offline_eval:main"
 so101-rollout = "so101_policy.rollout:main"
+so101-eval = "so101_policy.evaluate:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6"]

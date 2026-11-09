@@ -26,6 +26,9 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-08: SmolVLA dry run done (README; outputs/train/s6_public_smolvla): ~3 h, matches ACT offline, 190 ms per
   new chunk. `so101-rollout` written; shadow-tested with ACT. Open for the user: start pose vs safety limits,
   rollout step cap (recommended 4 deg/tick).
+- 2026-11-08: `so101-eval run|report` written (the protocol's trial runner: resume, voids repeated, trials.csv in
+  results/, Wilson + McNemar); unit-tested, not yet run on the arm. Reads eval.time_limit_s / start_pose_deg /
+  region from recording.yaml once PROTOCOL section 7 is filled.
 - **Next:** after the box: relocate the ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7,
   then S3 (collect 50-100 demonstrations).
 
