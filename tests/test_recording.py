@@ -185,3 +185,21 @@ def test_sync_goal_keeps_torque_state():
     held = _FakeBus({"a": 1, "b": 1})
     sync_goal_keep_torque(held)
     assert held.torque == {"a": 1, "b": 1}
+
+
+def test_preview_compose_and_hooks():
+    import types
+
+    import numpy as np
+
+    from so101_policy.preview import Preview, compose, install
+
+    obs = {"zed": np.zeros((540, 840, 3), np.uint8), "wrist": np.zeros((360, 640, 3), np.uint8),
+           "shoulder_pan.pos": 1.0, "gripper.pos": 30.0}  # fmt: skip
+    img = compose(obs, {"shoulder_pan.pos": 2.0})
+    assert img.shape == (360 + 58, 560 + 640, 3)
+    mod = types.SimpleNamespace(init_keyboard_listener=lambda: (None, {"exit_early": False}))
+    pv = Preview()
+    install(mod, pv)
+    _, events = mod.init_keyboard_listener()
+    assert pv.events is events and mod.init_visualization() is None

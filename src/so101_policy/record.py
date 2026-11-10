@@ -89,8 +89,6 @@ def lerobot_args(settings: dict, devices, args: argparse.Namespace) -> list[str]
         f"--dataset.streaming_encoding={'true' if settings.get('streaming_encoding', True) else 'false'}",
         "--dataset.push_to_hub=false",
         f"--display_data={'true' if args.display else 'false'}",
-        # JPEG frames in the viewer only (the dataset is unaffected): keeps rerun's memory and CPU low
-        *(["--display_compressed_images=true"] if args.display else []),
         f"--resume={'true' if args.resume else 'false'}",
     ]
 
@@ -176,7 +174,7 @@ def main(argv: list[str] | None = None) -> None:
         "--reset-time", type=float, default=120.0,
         help="longest reset between episodes (s); press n to start the next episode sooner",
     )  # fmt: skip
-    p.add_argument("--display", action="store_true", help="show both cameras and the joints in rerun")
+    p.add_argument("--display", action="store_true", help="show both cameras and the joints live")
     p.add_argument("--resume", action="store_true", help="append to an existing dataset")
     p.add_argument("--dry", action="store_true", help="print the LeRobot command and exit")
     p.add_argument(
@@ -226,6 +224,12 @@ def main(argv: list[str] | None = None) -> None:
         "episode, q = stop recording.\n"
         "Each episode: start pose -> pick -> place -> back to the start pose -> n.\n"
     )
+    if args.display:
+        # LeRobot's rerun viewer hung on this laptop: show our own OpenCV window instead.
+        from so101_policy.preview import Preview, install
+
+        install(lerobot_record, Preview())
+        print("A window shows both cameras as recorded; the keys also work in that window.\n")
     sys.argv = ["lerobot-record", *cmd]
     lerobot_record.main()
 
