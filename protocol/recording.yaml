@@ -17,6 +17,14 @@ follower:
   # 30 Hz stays far below this; it limits the jump if the leader starts far from the follower.
   max_relative_target: 10.0
 
+# Scene (not read by code; the protocol requires the same scene for demonstrations and evaluation).
+# Check the light's display before each session: it may not keep its settings when switched off.
+scene:
+  light: Ulanzi UA12 LED tube, magnetic mount at the centre of the box
+  light_brightness_pct: 10
+  light_colour_temp_k: null   # to fill in: the value on the light's display
+  light_power: null           # to fill in: battery or USB-C (USB-C recommended for long sessions)
+
 cameras:
   zed:
     # ZED 2 over UVC, FHD per eye: 3840x1080 side by side, YUYV only. Left eye, then crop and resize.

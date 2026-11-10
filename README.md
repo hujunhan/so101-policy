@@ -112,7 +112,10 @@ The two cameras are renamed to the base model's `camera1` (up) and `camera2` (si
 - ZED 2 on a fixed mount, read as a UVC stereo camera (factory calibration); wrist camera on the gripper (USB,
   1280 x 720 MJPG, fixed focus).
 - Linux laptop with an RTX 3080 Laptop GPU (16 GB).
-- Workspace being rebuilt: light box and backdrop.
+- Workspace (2026-11-09): a white foam-board light box on an IKEA SANDSBERG table (3D-printed three-way corner
+  joints), a black fabric mat under the working region (taped down), the left side screened. One light: an
+  Ulanzi UA12 bi-colour LED tube (2700-6500 K, CRI > 95) on its magnetic mount at the centre, at 10 % brightness.
+  No flicker or banding in either camera at that setting (frame brightness varies 0.04 % over 3 s).
 
 ## Decisions
 
