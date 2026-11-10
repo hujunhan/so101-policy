@@ -38,7 +38,11 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-09: servo P = 16 decided. Dry runs in the box: dataset local/so101_box_dry (data/, git-ignored).
 - 2026-11-09: object changed to a blue ring box (PROTOCOL amendment 2). Dry runs local/so101_box_dry2: 5/5 into
   the bowl; time limit 70 s. Section 7 complete (box 55 x 50 x 40 mm).
-- **Next:** S3 (50-100 demonstrations).
+- 2026-11-10: S3 first 20 demos in data/local__so101_box (git-ignored; back up). Pilot ACT (outputs/train/
+  m3_act_pilot20, 20k steps): pilot runs 1-2 stopped (start pose bug, PROTOCOL amendment 3), 3 failed to grasp,
+  4 succeeded twice (README clip). so101-record --display uses our OpenCV preview (rerun hung: hybrid GPU).
+  Key listener in rollout/eval only while the policy runs (it swallowed typed input).
+- **Next:** ~30 more demos, mostly in the near third of the region (u < 0.33) and varied yaw; then ACT on all.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key
