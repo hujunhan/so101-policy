@@ -4,11 +4,11 @@
     so101-eval report results/act/base [results/smolvla/base]     # Wilson intervals; McNemar for two
 
 `run` goes through `protocol/eval_states.csv` in order. Per trial: the arm moves to the start pose; the
-operator places the cube at the listed state and presses Enter; the policy runs until the time limit or until
-the operator presses q (the task is finished, or the arm is back and still); the arm holds while the operator
-judges the result (success, or the first failure label, or void with its cause) and adds notes; the row is
-written at once, so a session can stop any time and resume later. Void trials are repeated at the end of the
-list, keeping their number. Each trial's camera streams, joint states and actions go to the git-ignored
+operator places the tape roll at the listed state and presses Enter; the policy runs until the time limit or
+until the operator presses q (the task is finished, or the arm is back and still); the arm holds while the
+operator judges the result (success, or the first failure label, or void with its cause) and adds notes; the
+row is written at once, so a session can stop any time and resume later. Void trials are repeated at the end
+of the list, keeping their number. Each trial's camera streams, joint states and actions go to the git-ignored
 captures/eval/; the trial log goes to results/<policy>/<condition>/ (committed).
 
 The arm moves under the policy's control through SafeArm. The operator stands at the arm with power in reach.
@@ -118,15 +118,17 @@ def eval_states() -> list[dict]:
                  "yaw_deg": float(r["yaw_deg"])} for r in csv.DictReader(f)]  # fmt: skip
 
 
-def placement_text(state: dict, region: dict | None) -> str:
-    """Where the cube goes. With the region from PROTOCOL section 7 (recording.yaml `eval.region`: `origin`,
+def placement_text(state: dict, region: dict | None, yaw: bool = True) -> str:
+    """Where the object goes. With the region from PROTOCOL section 7 (recording.yaml `eval.region`: `origin`,
     `u_axis`, `v_axis` in mm, base frame), in mm; before that, in normalized coordinates."""
     if region:
         o, eu, ev = (np.asarray(region[k], float) for k in ("origin", "u_axis", "v_axis"))
         x, y = o + state["u"] * eu + state["v"] * ev
         uv = f"u {state['u']:.2f}, v {state['v']:.2f}"
-        return f"x {x:.0f} mm, y {y:.0f} mm ({uv}), yaw {state['yaw_deg']:.0f} deg"
-    return f"u {state['u']:.2f}, v {state['v']:.2f} (region not fixed yet), yaw {state['yaw_deg']:.0f} deg"
+        text = f"x {x:.0f} mm, y {y:.0f} mm ({uv})"
+    else:
+        text = f"u {state['u']:.2f}, v {state['v']:.2f} (region not fixed yet)"
+    return text + (f", yaw {state['yaw_deg']:.0f} deg" if yaw else "")
 
 
 def parse_trials(text: str | None) -> list[int]:
@@ -281,7 +283,7 @@ def run(args) -> None:
                 print(f"\n=== Trial {k} ===")
                 print("Moving to the start pose...")
                 arm.move_to(start, speed_rad_s=np.radians(20.0))
-                print(f"Place the cube: {placement_text(st, ev.get('region'))}")
+                print(f"Place the tape: {placement_text(st, ev.get('region'), ev.get('use_yaw', True))}")
                 a = ask("Enter = run, skip = leave this trial for later, quit = end the session: ").lower()
                 if a == "quit":
                     break
@@ -318,7 +320,7 @@ def run(args) -> None:
                 row = {"trial": k, **ask_result(ended, elapsed, time_limit)}
                 append_row(csv_path, row)
                 print(f"Wrote trial {k}: {row}")
-                ask("Take the cube out, clear the arm's way back, then Enter: ")
+                ask("Take the tape out, clear the arm's way back, then Enter: ")
             print("\n" + format_summary(f"{args.policy}/{args.condition}", summary(read_rows(csv_path))))
             print("Holding. Support the arm when asked; torque goes off next.")
     finally:

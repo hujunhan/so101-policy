@@ -67,3 +67,12 @@ def test_parse_trials_and_placement():
     region = {"origin": [200, -100], "u_axis": [0, 200], "v_axis": [150, 0]}
     assert "x 350 mm, y 0 mm" in placement_text(st, region)
     assert "region not fixed" in placement_text(st, None)
+    assert "yaw" not in placement_text(st, region, yaw=False)
+
+
+def test_protocol_region_matches_settings():
+    from so101_policy.record import load_settings
+
+    ev = load_settings()["eval"]
+    st = {"u": 1.0, "v": 1.0, "yaw_deg": 0.0}
+    assert "x 330 mm, y 40 mm" in placement_text(st, ev["region"], ev["use_yaw"])

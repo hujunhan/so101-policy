@@ -7,6 +7,10 @@ evaluation in M3 follows it, and M4 and M5 reuse it unchanged. Code: `src/so101_
 allowed only as dated amendments at the end of this file, each with its reason. After the first policy run
 nothing changes. A deviation during a run is reported, not hidden.
 
+**Amendment 1 (2026-11-09, before any demonstration): the object is a roll of tape, not a cube.** Read "cube"
+as "tape roll" in sections 1-5; the yaw in the initial states is not used, and the region is 14 x 15 cm.
+Details at the end of this file.
+
 ## 1. Task
 
 Pick one cube (about 3 cm, solid matte colour) from the table and place it in a bowl at a fixed position.
@@ -96,13 +100,38 @@ per policy with successes and typical failures.
 To fill in once the workspace is rebuilt and S2's dry runs are done, and to commit before the first
 demonstration (region, bowl, start pose, objects) and before the first policy run (time limit):
 
-- [ ] Region corners (x, y in mm, base frame) and which side u and v run along
-- [ ] Bowl position and size; cube size and colour
+Base frame: so101-core's model frame (x forward from the arm, y to its left, z up), located in the light box by
+so101-calib's `relocate` on 2026-11-09 (`results/relocate/20261109_214800.yaml`; the table is at z = -2.4 mm,
+the black mat 1 mm above it). The ZED and the arm's base must not move; if either does, relocate again and
+check the region in the camera view before any further trial.
+
+- [x] **Region**: x 190-330 mm, y -110 to +40 mm (14 x 15 cm) of the tape roll's centre. u runs along x
+  (u = 0 at x = 190 mm, nearest the arm), v along y (v = 0 at y = -110 mm, nearest the ZED). Why there: the
+  gripper tip rests at x 156 mm, 14 mm above the table, so closer states would put the tape under it; beyond
+  x 330 mm the arm cannot point its gripper down at the table; below y -110 mm the tape leaves the ZED's view.
+- [x] **Bowl**: grey ceramic pet bowl on a foot, rim outer diameter 115 mm, 73 mm high; centre at x 250 mm,
+  y +170 mm (300 mm from the base axis), behind the region as the ZED sees it, so it hides none of it. Its
+  place is marked on the mat. **Object**: a roll of tape, outer diameter 37 mm, lying flat (hole up).
 - [ ] Start pose (joint angles)
-- [ ] Cameras: streams, resolution, crop, frame rate, exposure and white balance settings
+- [x] **Cameras**: ZED 2 left eye, FHD (1920 x 1080 per eye) over UVC, crop x 240-1920 at full height, resized to
+  840 x 540; wrist camera 1280 x 720 MJPG; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
+  exposure (DECISIONS 2026-11-09); lighting: one Ulanzi UA12 at 10 %, daylight preset.
 - [ ] Servo P gain during recording and evaluation
 - [ ] Time limit (3 x median dry-run duration, rounded up to 5 s)
 
 ## Amendments
 
-None yet.
+### Amendment 1, 2026-11-09: a tape roll instead of a cube
+
+Made before any demonstration was recorded or any policy run, when the workspace was built.
+
+- **Object**: a roll of tape (outer diameter 37 mm), lying flat with its hole up, instead of a 3 cm cube.
+  Sections 1-5 apply with "cube" read as "tape roll": success is the whole roll inside the bowl, the gripper open
+  and not touching it, no person touching anything during the trial; the failure labels are unchanged.
+- **Initial states**: the roll looks the same at any rotation, so the yaw column of `eval_states.csv` is not
+  used (the operator places the roll's centre only, within about 5 mm). The list itself is unchanged: same
+  seed, same positions in normalized coordinates, same order.
+- **Region**: 14 x 15 cm instead of roughly 20 x 15 cm: the arm's reach with the gripper pointing down and the
+  gripper's rest position bound it (section 7).
+- **Why**: the user's choice of task object. Effect on the comparison: none between policies (all run the same
+  list); results are not comparable with any cube results, of which there are none.

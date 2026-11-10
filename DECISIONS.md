@@ -46,7 +46,25 @@ follower's pose before starting, and syncs the follower's goal to its present po
 - *A recording loop of our own through `SafeArm`*: full control, but rewrites what LeRobot already does
   (dataset writing, video encoding, keyboard control) and risks a non-standard dataset.
 
+## 2026-11-09: The object is a roll of tape (task: put the tape in the bowl)
+
+**Decided:** the task object changes from a 3 cm cube to a roll of tape (outer diameter 37 mm, lying flat), put
+into a grey ceramic pet bowl on a foot (rim 115 mm across, 73 mm high). Recorded as PROTOCOL amendment 1,
+before any demonstration. Placement: the tape's region is x 190-330 mm, y -110 to +40 mm in the base frame;
+the bowl's centre is at (250, 170) mm; the ZED crop is x 240-1920 at full height, resized to 840 x 540.
+
+**Why:** the user's choice of object. The rest of the task decision below still holds (one object, a fixed
+target, unambiguous success). The roll is symmetric, so its rotation needs no placing (faster resets).
+Placement from the arm's model and the ZED view (captures, not committed): the bowl moved 5 cm closer to the
+arm (it was 34 cm out, at the edge of reaching over a 7 cm rim); the region starts at x 190 mm because the
+gripper tip rests at x 156 mm, 14 mm above the table, and ends at x 330 mm, the limit for a gripper pointing
+down; the crop keeps the folded arm (to x ~260 px) and the height the gripper reaches above the bowl.
+
+**Options:** keep the cube (S1's choice); the tape roll (chosen).
+
 ## 2026-11-08: The task is one cube into a fixed bowl
+
+*Superseded in its object and region by the 2026-11-09 entry above; the reasoning still applies.*
 
 **Decided:** pick one cube (about 3 cm, a solid matte colour) from a random position and yaw inside a region of
 roughly 20 x 15 cm and place it in a bowl at a fixed position. The exact region and objects are fixed with the

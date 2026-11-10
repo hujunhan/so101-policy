@@ -30,8 +30,10 @@ cameras:
     # ZED 2 over UVC, FHD per eye: 3840x1080 side by side, YUYV only. Left eye, then crop and resize.
     capture: [3840, 1080]
     fourcc: YUYV
-    crop: null            # [x, y, w, h] in left-eye pixels; null = the whole eye (draft)
-    out_size: [960, 540]  # draft
+    # Crop away the dark strip outside the box on the left; the folded arm reaches x ~260, and the gripper
+    # rises to the top of the view above the bowl, so the full height stays (PROTOCOL section 7).
+    crop: [240, 0, 1680, 1080]  # [x, y, w, h] in left-eye pixels
+    out_size: [840, 540]
     v4l2:
       power_line_frequency: 2   # 60 Hz mains (the factory default is 50 Hz: banding under US lighting)
   wrist:
@@ -41,3 +43,12 @@ cameras:
     v4l2:
       power_line_frequency: 2
       exposure_dynamic_framerate: 0  # otherwise the camera drops below 30 fps in dim light
+
+# Evaluation (PROTOCOL section 7). Read by so101-eval.
+eval:
+  # Tape roll centre, base frame, mm: x = origin + u * u_axis + v * v_axis.
+  region: {origin: [190, -110], u_axis: [140, 0], v_axis: [0, 150]}
+  bowl_centre_mm: [250, 170]
+  use_yaw: false          # a tape roll looks the same at any rotation (PROTOCOL amendment 1)
+  start_pose_deg: null    # open (PROTOCOL section 7)
+  time_limit_s: null      # open: 3 x median dry-run duration, rounded up to 5 s

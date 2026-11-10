@@ -32,7 +32,9 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-09: light box final (black mat taped, left side screened, lighting even). Left eye kept; ZED auto
   exposure kept (DECISIONS). ZED located: so101-calib results/relocate/20261109_214800.yaml (table at -2.4 mm =
   URDF base bottom; board 5 mm on a 1 mm mat). ZED and arm base must not move from now on.
-- **Next:** ZED crop and PROTOCOL section 7 (region, bowl, start pose, time limit after dry runs), then S3.
+- 2026-11-09: task changed to a tape roll (37 mm) into a grey bowl (PROTOCOL amendment 1, DECISIONS). Section 7
+  filled: region x 190-330, y -110..40 mm; bowl at (250, 170) mm; ZED crop x 240-1920 -> 840 x 540.
+- **Next:** start pose and rollout step cap (user to decide), S2-style dry runs in the box (time limit), then S3.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key
