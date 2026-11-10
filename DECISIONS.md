@@ -9,6 +9,23 @@ Each entry: date, what was decided, why, and the options that were weighed.
 - **Where the dataset lives**: Hugging Face Hub (public or private) or local only.
 - **The servo gain** for recording and evaluation: M2 ran at P = 32 (half the sag); LeRobot's default is 16.
 
+## 2026-11-09: Keep the ZED's automatic exposure
+
+**Decided:** the ZED runs with its own automatic exposure and gain during recording and evaluation; only the
+V4L2 controls it exposes are set (power line frequency; gain and white balance left at their defaults). The
+wrist camera's exposure and white balance can be locked through V4L2.
+
+**Why:** the light box keeps the lighting constant (table brightness 129-157 of 255 across the view after the
+final setup, 0.03 % saturated pixels), so the automatic exposure settles at similar values in every session.
+Locking it needs the ZED's vendor extension-unit commands (as in Stereolabs' zed-open-capture): the UVC
+controls have no exposure-auto switch. The user chose to start without that work.
+
+**Risk, watched:** the exposure can drift when the arm or a hand fills more of the view. If S3 or S5 videos
+show brightness changes that matter, port zed-open-capture's AEC/AGC control (option a below).
+
+**Options:** (a) port the extension-unit exposure control to Python (~150 lines; exposure really fixed);
+(b) keep the automatic exposure (chosen); (c) install the ZED SDK for camera access (heavy; rewrites capture).
+
 ## 2026-11-08: Record through `so101-record`, a thin wrapper around `lerobot-record`
 
 **Decided:** demonstrations are recorded with LeRobot's own record loop (leader arm, LeRobot dataset format),
