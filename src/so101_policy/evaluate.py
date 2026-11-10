@@ -210,7 +210,15 @@ def run(args) -> None:
     from so101_policy import runlog
     from so101_policy.check_dataset import JOINTS
     from so101_policy.record import load_settings
-    from so101_policy.rollout import PolicyRunner, RunLog, VideoSink, open_cameras, parse_map, run_episode
+    from so101_policy.rollout import (
+        PolicyRunner,
+        RunLog,
+        VideoSink,
+        open_cameras,
+        parse_map,
+        run_episode,
+        stop_keys,
+    )
 
     log_path = runlog.start("eval", None)
     print(f"Log: {log_path}")
@@ -259,15 +267,6 @@ def run(args) -> None:
     )
     cams = open_cameras(settings, devices)
     stop = threading.Event()
-    listener = None
-    try:
-        from lerobot.utils.keyboard_input import create_key_listener
-
-        listener = create_key_listener(
-            lambda k: stop.set() if k in ("q", "esc") else None, controls_help="q = end the trial"
-        )
-    except Exception as e:
-        raise SystemExit(f"No keyboard listener ({e}): the operator could not end a trial.") from e
 
     arm = SafeArm(devices, safety=safety, joint_map=jm, position_p=p_gain)
     try:
@@ -306,7 +305,10 @@ def run(args) -> None:
                 print("Running. q = end the trial (finished, or back and still for 5 s).")
                 t0 = time.perf_counter()
                 try:
-                    ended = run_episode(runner, cams, arm, jm, fps, time_limit, task, False, log, video, stop)
+                    with stop_keys(stop, "q = end the trial"):  # only while the policy runs
+                        ended = run_episode(
+                            runner, cams, arm, jm, fps, time_limit, task, False, log, video, stop
+                        )
                 except Exception as e:  # a bus or camera fault: hold, record, let the operator void it
                     ended = f"error: {type(e).__name__}: {e}"
                 elapsed = time.perf_counter() - t0
@@ -324,8 +326,6 @@ def run(args) -> None:
             print("\n" + format_summary(f"{args.policy}/{args.condition}", summary(read_rows(csv_path))))
             print("Holding. Support the arm when asked; torque goes off next.")
     finally:
-        if listener is not None:
-            listener.stop()
         for c in cams.values():
             c.disconnect()
 

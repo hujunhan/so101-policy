@@ -19,6 +19,7 @@ import argparse
 import json
 import threading
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -180,6 +181,27 @@ class VideoSink:
             w.release()
 
 
+@contextmanager
+def stop_keys(stop: threading.Event, help_text: str = "q = stop"):
+    """Listen for q / Esc only while the policy runs. LeRobot's terminal key listener puts the terminal in
+    cbreak mode and reads every key, so no input() prompt may run while it is active (a `yes` typed at the
+    prompt was swallowed); it is stopped, and the terminal restored, as soon as the episode ends."""
+    listener = None
+    try:
+        from lerobot.utils.keyboard_input import create_key_listener
+
+        listener = create_key_listener(
+            lambda k: stop.set() if k in ("q", "esc") else None, controls_help=help_text
+        )
+    except Exception as e:
+        print(f"(no keyboard listener: {e}; Ctrl+C stops)")
+    try:
+        yield
+    finally:
+        if listener is not None:
+            listener.stop()
+
+
 def run_episode(
     runner: PolicyRunner,
     cams: dict,
@@ -308,15 +330,6 @@ def main(argv: list[str] | None = None) -> None:
 
     cams = open_cameras(settings, devices)
     stop = threading.Event()
-    listener = None
-    try:
-        from lerobot.utils.keyboard_input import create_key_listener
-
-        listener = create_key_listener(
-            lambda k: stop.set() if k in ("q", "esc") else None, controls_help="q = stop"
-        )
-    except Exception as e:
-        print(f"(no keyboard listener: {e}; Ctrl+C stops)")
 
     log = RunLog()
     video = VideoSink(out, fps)
@@ -350,17 +363,16 @@ def main(argv: list[str] | None = None) -> None:
             state0 = np.array(list(rad_to_lerobot(arm.read(), jm).values()))
             print(f"Policy warm-up: {runner.warm_up(state0, images, task):.0f} ms.")
             print("Running. q = stop.")
-            end = run_episode(
-                runner, cams, arm, jm, fps, args.time_limit, task, args.shadow, log, video, stop
-            )
+            with stop_keys(stop):
+                end = run_episode(
+                    runner, cams, arm, jm, fps, args.time_limit, task, args.shadow, log, video, stop
+                )
             print(f"Ended: {end}.")
             if not args.shadow:
                 arm.hold()
                 print("Holding. Support the arm when asked; torque goes off next.")
     finally:
         video.close()
-        if listener is not None:
-            listener.stop()
         for c in cams.values():
             c.disconnect()
         meta["end"] = end
