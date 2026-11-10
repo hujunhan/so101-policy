@@ -37,7 +37,7 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-09: start pose = clipped rest pose (accepted), rollout step cap 4 deg/tick (DECISIONS, recording.yaml).
 - 2026-11-09: servo P = 16 decided. Dry runs in the box: dataset local/so101_box_dry (data/, git-ignored).
 - 2026-11-09: object changed to a blue ring box (PROTOCOL amendment 2). Dry runs local/so101_box_dry2: 5/5 into
-  the bowl; time limit 70 s. Section 7 complete except the box's size.
+  the bowl; time limit 70 s. Section 7 complete (box 55 x 50 x 40 mm).
 - **Next:** S3 (50-100 demonstrations).
 
 ## How we work

@@ -114,8 +114,10 @@ check the region in the camera view before any further trial.
   x 330 mm the arm cannot point its gripper down at the table; below y -110 mm the tape leaves the ZED's view.
 - [x] **Bowl**: grey ceramic pet bowl on a foot, rim outer diameter 115 mm, 73 mm high; centre at x 250 mm,
   y +170 mm (300 mm from the base axis), behind the region as the ZED sees it, so it hides none of it. Its
-  place is marked on the mat. **Object**: a blue ring box (a rounded cube; size to be measured), lying on its
-  base, lid up (amendment 2).
+  place is marked on the mat. **Object**: a blue ring box, 55 x 50 mm on the table and 40 mm high, lid up
+  (amendment 2). Checked for the 30 listed states: every box stays in the ZED's view (nearest edge at
+  y -125 mm; the view ends near -150) and clear of the gripper resting over the region's near edge (closest:
+  trial 13, 10 mm from the gripper tip, which rests 14-20 mm above the table).
 - [x] **Start pose**: the arm's folded rest pose, clipped to SafeArm's joint limits (with its 5 deg margin):
   pan 8.6, lift -95.0, elbow 91.8, wrist flex 76.0, wrist roll -92.5 deg, gripper 4.5 % (LeRobot units). The
   rest pose itself has the shoulder at -102.4 and the elbow at 96.6, outside the limits, so policy runs start
@@ -151,7 +153,7 @@ Made before any demonstration was recorded or any policy run, when the workspace
 Made after five dry-run episodes with the tape roll and five with the box (S2-style checks of the pipeline in
 the light box), before any demonstration for training was recorded and before any policy run.
 
-- **Object**: a blue ring box (a rounded cube), lying on its base with the lid up, instead of the tape roll:
+- **Object**: a blue ring box (55 x 50 x 40 mm, a rounded box), lid up, instead of the tape roll:
   the round roll was hard to grasp with the leader. Sections 1-5 apply with "cube" read as "ring box".
 - **Initial states**: the box looks the same after a quarter turn, as the cube did, so the yaw column of
   `eval_states.csv` is used again (placing tolerance about 5 mm and 5 deg). The list is unchanged.
