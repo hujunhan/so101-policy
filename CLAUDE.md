@@ -34,7 +34,8 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   URDF base bottom; board 5 mm on a 1 mm mat). ZED and arm base must not move from now on.
 - 2026-11-09: task changed to a tape roll (37 mm) into a grey bowl (PROTOCOL amendment 1, DECISIONS). Section 7
   filled: region x 190-330, y -110..40 mm; bowl at (250, 170) mm; ZED crop x 240-1920 -> 840 x 540.
-- **Next:** start pose and rollout step cap (user to decide), S2-style dry runs in the box (time limit), then S3.
+- 2026-11-09: start pose = clipped rest pose (accepted), rollout step cap 4 deg/tick (DECISIONS, recording.yaml).
+- **Next:** servo P gain (16 now), dry runs in the box (time limit), then S3.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key

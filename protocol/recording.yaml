@@ -50,5 +50,10 @@ eval:
   region: {origin: [190, -110], u_axis: [140, 0], v_axis: [0, 150]}
   bowl_centre_mm: [250, 170]
   use_yaw: false          # a tape roll looks the same at any rotation (PROTOCOL amendment 1)
-  start_pose_deg: null    # open (PROTOCOL section 7)
+  # The folded rest pose clipped to SafeArm's limits (LeRobot degrees; gripper %): DECISIONS 2026-11-09.
+  start_pose_deg: [8.6, -95.0, 91.8, 76.0, -92.5, 4.5]
   time_limit_s: null      # open: 3 x median dry-run duration, rounded up to 5 s
+
+# Policy runs on the arm (so101-rollout, so101-eval): SafeArm's step cap per 30 Hz tick (DECISIONS 2026-11-09).
+rollout:
+  max_step_deg: 4.0   # 120 deg/s: above the demonstrations' peak joint speeds (~110 deg/s)

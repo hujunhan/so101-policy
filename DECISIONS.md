@@ -46,6 +46,25 @@ follower's pose before starting, and syncs the follower's goal to its present po
 - *A recording loop of our own through `SafeArm`*: full control, but rewrites what LeRobot already does
   (dataset writing, video encoding, keyboard control) and risks a non-standard dataset.
 
+## 2026-11-09: Policy runs start from the clipped rest pose, with a 4 deg step cap
+
+**Decided:** (1) on the arm, a policy starts from the folded rest pose clipped to SafeArm's limits (shoulder
+lift -95.0 instead of -102.4 deg, elbow 91.8 instead of 96.6, gripper 4.5 instead of 0.8 %); demonstrations
+keep starting from the rest pose itself. (2) SafeArm's step cap for policy runs is 4 deg per 30 Hz tick
+(120 deg/s), set in `protocol/recording.yaml` (`rollout.max_step_deg`).
+
+**Why:** (1) the policy is closed loop and sees where the arm is; a start a few degrees off is the kind of
+variation it should handle, and the slow replay of a demonstration from the clipped pose reproduced the
+recorded states. If the first runs show trouble at the start, the alternative is a rest-zone exception in
+so101-core's safety layer. (2) The demonstrations reach ~110 deg/s on the shoulder and the elbow; the default
+cap (2 deg per tick, 60 deg/s) would slow the arm below what the policy plans, so the camera views would drift
+from the training data and the success rate would measure the cap rather than the policy. 4 deg still stops a
+sudden jump from a bad action; the limit margin and the stall check are unchanged.
+
+**Options:** (1) accept the offset (chosen); a rest-zone exception in the safety layer; a start pose inside the
+limits for demonstrations too (hard to reproduce by hand with the leader). (2) 2 deg (60 deg/s); 4 deg
+(chosen); 10 deg (LeRobot record's own cap; hardly a limit).
+
 ## 2026-11-09: The object is a roll of tape (task: put the tape in the bowl)
 
 **Decided:** the task object changes from a 3 cm cube to a roll of tape (outer diameter 37 mm, lying flat), put
