@@ -21,7 +21,7 @@ hw = [
     "so101-core[hw] @ git+https://github.com/hujunhan/so101-core@534b1e91f488768ea92d1f92bbf6cc3459d00bb7",
     # Recording and training extras (datasets, video, rerun display, accelerate). The commit must match
     # so101-core's pin.
-    "lerobot[dataset,viz,training,smolvla] @ git+https://github.com/huggingface/lerobot@f5c9bc02137c331b009eccd44ece6f11b62187a8",
+    "lerobot[dataset,viz,training,smolvla,deepdiff-dep] @ git+https://github.com/huggingface/lerobot@f5c9bc02137c331b009eccd44ece6f11b62187a8",
 ]
 
 [project.scripts]
