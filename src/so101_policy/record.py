@@ -165,7 +165,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--root", default=None, help="dataset directory (default: data/<repo-id>)")
     p.add_argument("--task", default=TASK)
     p.add_argument("--episodes", type=int, default=3)
-    p.add_argument("--episode-time", type=float, default=30.0, help="seconds per episode")
+    p.add_argument("--episode-time", type=float, default=60.0, help="seconds per episode (press n when done)")
     p.add_argument(
         "--reset-time", type=float, default=120.0,
         help="longest reset between episodes (s); press n to start the next episode sooner",
