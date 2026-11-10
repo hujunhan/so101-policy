@@ -85,6 +85,8 @@ def lerobot_args(settings: dict, devices, args: argparse.Namespace) -> list[str]
         f"--dataset.streaming_encoding={'true' if settings.get('streaming_encoding', True) else 'false'}",
         "--dataset.push_to_hub=false",
         f"--display_data={'true' if args.display else 'false'}",
+        # JPEG frames in the viewer only (the dataset is unaffected): keeps rerun's memory and CPU low
+        *(["--display_compressed_images=true"] if args.display else []),
         f"--resume={'true' if args.resume else 'false'}",
     ]
 
@@ -170,7 +172,7 @@ def main(argv: list[str] | None = None) -> None:
         "--reset-time", type=float, default=120.0,
         help="longest reset between episodes (s); press n to start the next episode sooner",
     )  # fmt: skip
-    p.add_argument("--display", action="store_true", help="show cameras and joints in rerun")
+    p.add_argument("--display", action="store_true", help="show both cameras and the joints in rerun")
     p.add_argument("--resume", action="store_true", help="append to an existing dataset")
     p.add_argument("--dry", action="store_true", help="print the LeRobot command and exit")
     p.add_argument(
