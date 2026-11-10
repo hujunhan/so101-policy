@@ -29,8 +29,10 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
 - 2026-11-08: `so101-eval run|report` written (the protocol's trial runner: resume, voids repeated, trials.csv in
   results/, Wilson + McNemar); unit-tested, not yet run on the arm. Reads eval.time_limit_s / start_pose_deg /
   region from recording.yaml once PROTOCOL section 7 is filled.
-- **Next:** after the box: relocate the ZED, ZED crop, lock camera exposure/white balance, PROTOCOL section 7,
-  then S3 (collect 50-100 demonstrations).
+- 2026-11-09: light box final (black mat taped, left side screened, lighting even). Left eye kept; ZED auto
+  exposure kept (DECISIONS). ZED located: so101-calib results/relocate/20261109_214800.yaml (table at -2.4 mm =
+  URDF base bottom; board 5 mm on a 1 mm mat). ZED and arm base must not move from now on.
+- **Next:** ZED crop and PROTOCOL section 7 (region, bowl, start pose, time limit after dry runs), then S3.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key
