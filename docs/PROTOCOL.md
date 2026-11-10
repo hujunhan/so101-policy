@@ -120,7 +120,7 @@ check the region in the camera view before any further trial.
 - [x] **Cameras**: ZED 2 left eye, FHD (1920 x 1080 per eye) over UVC, crop x 240-1920 at full height, resized to
   840 x 540; wrist camera 1280 x 720 MJPG; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
   exposure (DECISIONS 2026-11-09); lighting: one Ulanzi UA12 at 10 %, daylight preset.
-- [ ] Servo P gain during recording and evaluation
+- [x] **Servo P gain**: 16 in recording and evaluation (DECISIONS 2026-11-09).
 - [ ] Time limit (3 x median dry-run duration, rounded up to 5 s)
 
 ## Amendments

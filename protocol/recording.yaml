@@ -11,7 +11,7 @@ fps: 30
 streaming_encoding: true
 
 follower:
-  # LeRobot default P = 16; M2 ran at 32 (half the sag). Open decision, see DECISIONS.md.
+  # LeRobot's default; also for evaluation (DECISIONS 2026-11-09). M2 ran at 32.
   p_gain: 16
   # LeRobot caps each commanded step (degrees) relative to the present position. Normal teleoperation at
   # 30 Hz stays far below this; it limits the jump if the leader starts far from the follower.

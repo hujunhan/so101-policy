@@ -2,12 +2,31 @@
 
 Each entry: date, what was decided, why, and the options that were weighed.
 
-## Open (to decide in S1)
+## Open
 
-- **Cameras for the policy**: ZED left eye at FHD with a fixed crop, the wrist camera, or both; resolution and
-  frame rate.
 - **Where the dataset lives**: Hugging Face Hub (public or private) or local only.
-- **The servo gain** for recording and evaluation: M2 ran at P = 32 (half the sag); LeRobot's default is 16.
+
+## 2026-11-09: Servo P gain 16 for recording and evaluation
+
+**Decided:** the follower runs at P = 16 (LeRobot's default) in demonstrations and in policy runs.
+
+**Why:** the S2 pipeline was verified at 16 (a slow replay repeated the recorded joint states within 0.1-0.4 deg
+median); public SO-101 datasets use the default; the policy closes the loop through the cameras, so the
+steady sag under gravity is compensated by what it sees. P = 32 halves the sag (M2) but the servos jitter and
+heat more, and the pipeline would need re-testing.
+
+**Options:** 16 (chosen); 32 (M2's value).
+
+## 2026-11-09: Policy cameras: ZED left eye (cropped) and the wrist camera
+
+**Decided:** both cameras: the ZED's left eye at FHD, cropped to x 240-1920 and resized to 840 x 540, and the
+wrist camera at 1280 x 720; 30 fps (PROTOCOL section 7, `protocol/recording.yaml`).
+
+**Why:** the ZED sees the whole arm, the tape and the bowl (where to go); the wrist camera sees the grasp up
+close (the public SO-101 datasets and ACT/SmolVLA recipes use a scene and a wrist view). The left eye keeps
+the whole folded arm in view, where the right eye cuts it off, and the calibration tools use the left eye.
+
+**Options:** the ZED alone; the wrist camera alone; both (chosen). Right eye instead of the left (rejected).
 
 ## 2026-11-09: Keep the ZED's automatic exposure
 
