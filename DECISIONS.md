@@ -4,7 +4,19 @@ Each entry: date, what was decided, why, and the options that were weighed.
 
 ## Open
 
-- **Where the dataset lives**: Hugging Face Hub (public or private) or local only.
+Nothing open.
+
+## 2026-11-09: Datasets stay local
+
+**Decided:** recorded datasets stay on this laptop in the git-ignored `data/` (LeRobot v3 format, `local/...`
+repo ids; `so101-record` never pushes). Back up `data/` to another disk after each recording session.
+
+**Why:** training reads the local files directly; nothing has to be uploaded or downloaded. The videos show
+the light box and the arm only, but every episode would need checking for people or the room before it went
+public. Whether to publish the final dataset is decided at S7.
+
+**Options:** local only (chosen); Hugging Face Hub, private (a cloud copy); Hub, public (reproducible by
+others; needs a privacy review of the videos).
 
 ## 2026-11-09: Servo P gain 16 for recording and evaluation
 
