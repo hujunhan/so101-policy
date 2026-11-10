@@ -21,7 +21,7 @@ from so101_policy.runlog import mask_serials
 
 REPO = Path(__file__).resolve().parents[2]
 SETTINGS = REPO / "protocol" / "recording.yaml"
-TASK = "Put the tape in the bowl."
+TASK = "Put the blue box in the bowl."
 
 
 def load_settings(path: Path = SETTINGS) -> dict:

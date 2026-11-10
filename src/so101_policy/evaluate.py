@@ -4,7 +4,7 @@
     so101-eval report results/act/base [results/smolvla/base]     # Wilson intervals; McNemar for two
 
 `run` goes through `protocol/eval_states.csv` in order. Per trial: the arm moves to the start pose; the
-operator places the tape roll at the listed state and presses Enter; the policy runs until the time limit or
+operator places the object at the listed state and presses Enter; the policy runs until the time limit or
 until the operator presses q (the task is finished, or the arm is back and still); the arm holds while the
 operator judges the result (success, or the first failure label, or void with its cause) and adds notes; the
 row is written at once, so a session can stop any time and resume later. Void trials are repeated at the end
@@ -283,7 +283,7 @@ def run(args) -> None:
                 print(f"\n=== Trial {k} ===")
                 print("Moving to the start pose...")
                 arm.move_to(start, speed_rad_s=np.radians(20.0))
-                print(f"Place the tape: {placement_text(st, ev.get('region'), ev.get('use_yaw', True))}")
+                print(f"Place the box: {placement_text(st, ev.get('region'), ev.get('use_yaw', True))}")
                 a = ask("Enter = run, skip = leave this trial for later, quit = end the session: ").lower()
                 if a == "quit":
                     break
@@ -320,7 +320,7 @@ def run(args) -> None:
                 row = {"trial": k, **ask_result(ended, elapsed, time_limit)}
                 append_row(csv_path, row)
                 print(f"Wrote trial {k}: {row}")
-                ask("Take the tape out, clear the arm's way back, then Enter: ")
+                ask("Take the box out, clear the arm's way back, then Enter: ")
             print("\n" + format_summary(f"{args.policy}/{args.condition}", summary(read_rows(csv_path))))
             print("Holding. Support the arm when asked; torque goes off next.")
     finally:

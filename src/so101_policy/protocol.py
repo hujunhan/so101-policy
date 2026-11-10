@@ -19,15 +19,15 @@ from scipy.stats import binomtest
 
 EVAL_SEED = 20261108
 N_TRIALS = 30
-YAW_RANGE_DEG = 90.0  # drawn for a cube; unused for the tape roll (PROTOCOL amendment 1)
+YAW_RANGE_DEG = 90.0  # a cube (and the ring box, PROTOCOL amendment 2) looks the same after a quarter turn
 EVAL_STATES_CSV = Path(__file__).resolve().parents[2] / "protocol" / "eval_states.csv"
 
 # First thing that went wrong, labelled from the trial video. Order follows the task.
 FAILURES = {
-    "grasp_miss": "gripper closed without the tape in it",
-    "drop_in_transit": "tape grasped, then dropped before the bowl",
-    "place_miss": "tape released but lands outside the bowl",
-    "no_release": "tape not released, or left stuck on the bowl rim",
+    "grasp_miss": "gripper closed without the object in it",
+    "drop_in_transit": "object grasped, then dropped before the bowl",
+    "place_miss": "object released but lands outside the bowl",
+    "no_release": "object not released, or left stuck on the bowl rim",
     "stuck": "freezes, oscillates, or runs out of time without one of the above",
     "collision": "hits the bowl, the table or itself hard enough to stop or move things; or a safety stop",
     "other": "anything else (described in the notes)",

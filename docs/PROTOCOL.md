@@ -11,6 +11,9 @@ nothing changes. A deviation during a run is reported, not hidden.
 as "tape roll" in sections 1-5; the yaw in the initial states is not used, and the region is 14 x 15 cm.
 Details at the end of this file.
 
+**Amendment 2 (2026-11-09, before any demonstration for training): the object is a blue ring box.** It
+replaces the tape roll of amendment 1; the yaw of the initial states is used again. Details at the end.
+
 ## 1. Task
 
 Pick one cube (about 3 cm, solid matte colour) from the table and place it in a bowl at a fixed position.
@@ -111,7 +114,8 @@ check the region in the camera view before any further trial.
   x 330 mm the arm cannot point its gripper down at the table; below y -110 mm the tape leaves the ZED's view.
 - [x] **Bowl**: grey ceramic pet bowl on a foot, rim outer diameter 115 mm, 73 mm high; centre at x 250 mm,
   y +170 mm (300 mm from the base axis), behind the region as the ZED sees it, so it hides none of it. Its
-  place is marked on the mat. **Object**: a roll of tape, outer diameter 37 mm, lying flat (hole up).
+  place is marked on the mat. **Object**: a blue ring box (a rounded cube; size to be measured), lying on its
+  base, lid up (amendment 2).
 - [x] **Start pose**: the arm's folded rest pose, clipped to SafeArm's joint limits (with its 5 deg margin):
   pan 8.6, lift -95.0, elbow 91.8, wrist flex 76.0, wrist roll -92.5 deg, gripper 4.5 % (LeRobot units). The
   rest pose itself has the shoulder at -102.4 and the elbow at 96.6, outside the limits, so policy runs start
@@ -121,7 +125,9 @@ check the region in the camera view before any further trial.
   840 x 540; wrist camera 1280 x 720 MJPG; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
   exposure (DECISIONS 2026-11-09); lighting: one Ulanzi UA12 at 10 %, daylight preset.
 - [x] **Servo P gain**: 16 in recording and evaluation (DECISIONS 2026-11-09).
-- [ ] Time limit (3 x median dry-run duration, rounded up to 5 s)
+- [x] **Time limit: 70 s.** The five dry-run demonstrations with the ring box in the light box
+  (`local/so101_box_dry2`, 2026-11-09) lasted 20.3, 21.0, 23.0, 25.9 and 33.9 s; 3 x the median 23.0 s = 69 s,
+  rounded up to 70 s.
 
 ## Amendments
 
@@ -139,3 +145,15 @@ Made before any demonstration was recorded or any policy run, when the workspace
   gripper's rest position bound it (section 7).
 - **Why**: the user's choice of task object. Effect on the comparison: none between policies (all run the same
   list); results are not comparable with any cube results, of which there are none.
+
+### Amendment 2, 2026-11-09: a blue ring box instead of the tape roll
+
+Made after five dry-run episodes with the tape roll and five with the box (S2-style checks of the pipeline in
+the light box), before any demonstration for training was recorded and before any policy run.
+
+- **Object**: a blue ring box (a rounded cube), lying on its base with the lid up, instead of the tape roll:
+  the round roll was hard to grasp with the leader. Sections 1-5 apply with "cube" read as "ring box".
+- **Initial states**: the box looks the same after a quarter turn, as the cube did, so the yaw column of
+  `eval_states.csv` is used again (placing tolerance about 5 mm and 5 deg). The list is unchanged.
+- Region, bowl, start pose and cameras are as in section 7.
+

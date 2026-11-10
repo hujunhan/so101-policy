@@ -76,3 +76,4 @@ def test_protocol_region_matches_settings():
     ev = load_settings()["eval"]
     st = {"u": 1.0, "v": 1.0, "yaw_deg": 0.0}
     assert "x 330 mm, y 40 mm" in placement_text(st, ev["region"], ev["use_yaw"])
+    assert ev["use_yaw"] is True

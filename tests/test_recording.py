@@ -97,7 +97,7 @@ def test_committed_settings_build_a_valid_command():
     ZedCameraConfig(**{k: v for k, v in cams["zed"].items() if k != "type"})  # the ZED part parses
 
     args = argparse.Namespace(
-        repo_id="local/x", root=None, task="Put the tape in the bowl.", episodes=2,
+        repo_id="local/x", root=None, task="Put the blue box in the bowl.", episodes=2,
         episode_time=20.0, reset_time=10.0, display=False, resume=False,
     )  # fmt: skip
     cmd = lerobot_args(settings, Devices, args)

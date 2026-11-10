@@ -36,7 +36,9 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   filled: region x 190-330, y -110..40 mm; bowl at (250, 170) mm; ZED crop x 240-1920 -> 840 x 540.
 - 2026-11-09: start pose = clipped rest pose (accepted), rollout step cap 4 deg/tick (DECISIONS, recording.yaml).
 - 2026-11-09: servo P = 16 decided. Dry runs in the box: dataset local/so101_box_dry (data/, git-ignored).
-- **Next:** check the box dry runs, set the time limit (PROTOCOL section 7), then S3.
+- 2026-11-09: object changed to a blue ring box (PROTOCOL amendment 2). Dry runs local/so101_box_dry2: 5/5 into
+  the bowl; time limit 70 s. Section 7 complete except the box's size.
+- **Next:** S3 (50-100 demonstrations).
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key

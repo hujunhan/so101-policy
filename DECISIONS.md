@@ -65,6 +65,17 @@ follower's pose before starting, and syncs the follower's goal to its present po
 - *A recording loop of our own through `SafeArm`*: full control, but rewrites what LeRobot already does
   (dataset writing, video encoding, keyboard control) and risks a non-standard dataset.
 
+## 2026-11-09: The object is a blue ring box
+
+**Decided:** the task object is a blue ring box (a rounded cube, lid up) instead of the tape roll; PROTOCOL
+amendment 2. Region, bowl, cameras and start pose are unchanged; the yaw of the initial states is used again.
+
+**Why:** the round tape roll was hard to grasp with the leader arm (the user's experience in the dry runs).
+The box is grasped on two flat faces; with the box all five dry-run episodes ended with the box in the bowl.
+Blue on the black mat is easy to see in both cameras.
+
+**Options:** keep the tape roll; the ring box (chosen).
+
 ## 2026-11-09: Policy runs start from the clipped rest pose, with a 4 deg step cap
 
 **Decided:** (1) on the arm, a policy starts from the folded rest pose clipped to SafeArm's limits (shoulder
