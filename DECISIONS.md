@@ -20,13 +20,22 @@ heat more, and the pipeline would need re-testing.
 ## 2026-11-09: Policy cameras: ZED left eye (cropped) and the wrist camera
 
 **Decided:** both cameras: the ZED's left eye at FHD, cropped to x 240-1920 and resized to 840 x 540, and the
-wrist camera at 1280 x 720; 30 fps (PROTOCOL section 7, `protocol/recording.yaml`).
+wrist camera captured at 1280 x 720 and resized to 640 x 360; 30 fps (PROTOCOL section 7,
+`protocol/recording.yaml`).
 
 **Why:** the ZED sees the whole arm, the tape and the bowl (where to go); the wrist camera sees the grasp up
 close (the public SO-101 datasets and ACT/SmolVLA recipes use a scene and a wrist view). The left eye keeps
 the whole folded arm in view, where the right eye cuts it off, and the calibration tools use the left eye.
 
+**Image sizes:** ACT runs its ResNet on the stored images (SmolVLA resizes to 512 x 512 anyway), so pixels cost
+training time. Measured on this laptop (ACT, batch 8, bf16): ZED 840 x 540 + wrist 1280 x 720 = 0.53 s/step,
+10.0 GB; ZED 840 x 540 + wrist 640 x 360 = 0.25 s/step, 4.5 GB (the public 640 x 480 pair: 0.22 s, 4.0 GB); the
+uncropped-size ZED (1680 x 1080) does not fit in 16 GB. At 840 x 540 the 5 cm box spans 52-64 px in the ZED view.
+The wrist camera is resized in software, not switched to its own 640 x 360 mode, so its field of view stays the
+one calibrated in M2.
+
 **Options:** the ZED alone; the wrist camera alone; both (chosen). Right eye instead of the left (rejected).
+Wrist at 1280 x 720 (2x slower training) or 640 x 360 (chosen).
 
 ## 2026-11-09: Keep the ZED's automatic exposure
 

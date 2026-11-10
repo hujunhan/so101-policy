@@ -96,3 +96,54 @@ class ZedCamera(OpenCVCamera):
         if self.color_mode == ColorMode.RGB:
             out = cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
         return out
+
+
+@CameraConfig.register_subclass("resized")
+@dataclass
+class ResizedCameraConfig(OpenCVCameraConfig):
+    """An ordinary UVC camera captured at `width` x `height` (its full field of view) and downscaled to
+    `out_width` x `out_height` before LeRobot sees the frame. Used for the wrist camera: captured at
+    1280x720 (where M2 calibrated it), stored at 640x360 to keep training cheap."""
+
+    out_width: int | None = None
+    out_height: int | None = None
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        if self.width is None or self.height is None or self.out_width is None or self.out_height is None:
+            raise ValueError("ResizedCameraConfig needs width/height (capture) and out_width/out_height.")
+        if self.rotation != Cv2Rotation.NO_ROTATION:
+            raise ValueError("Rotation is not supported here.")
+
+
+class ResizedCamera(OpenCVCamera):
+    def __init__(self, config: ResizedCameraConfig):
+        self.resize_config = config
+        super().__init__(config)
+
+    def __str__(self) -> str:
+        return f"ResizedCamera({self.index_or_path})"
+
+    @property
+    def _output_size(self) -> tuple[int, int]:
+        return self.resize_config.out_width, self.resize_config.out_height
+
+    def _reset_connection_settings(self) -> None:
+        super()._reset_connection_settings()
+        self.capture_width, self.capture_height = self.config.width, self.config.height
+        self.width, self.height = self._output_size
+
+    def _configure_capture_settings(self) -> None:
+        super()._configure_capture_settings()
+        self.width, self.height = self._output_size
+
+    def _postprocess_image(self, image: np.ndarray) -> np.ndarray:
+        h, w = image.shape[:2]
+        if (w, h) != (self.capture_width, self.capture_height):
+            raise RuntimeError(
+                f"{self} frame {w}x{h} does not match capture {self.capture_width}x{self.capture_height}."
+            )
+        out = cv2.resize(image, self._output_size, interpolation=cv2.INTER_AREA)
+        if self.color_mode == ColorMode.RGB:
+            out = cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
+        return out

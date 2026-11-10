@@ -37,9 +37,11 @@ cameras:
     v4l2:
       power_line_frequency: 2   # 60 Hz mains (the factory default is 50 Hz: banding under US lighting)
   wrist:
-    capture: [1280, 720]  # M2's wrist intrinsics are at 1280x720
+    capture: [1280, 720]  # the full field of view (M2's wrist intrinsics are at 1280x720)
     fourcc: MJPG
-    # No resize here (LeRobot's OpenCV camera cannot); the policy resizes at training time.
+    # Stored at half size: ACT trains 2x faster than at 1280x720 (0.25 vs 0.53 s/step, 4.5 vs 10 GB at
+    # batch 8). Resized in software, so the field of view stays the calibrated one (DECISIONS 2026-11-09).
+    out_size: [640, 360]
     v4l2:
       power_line_frequency: 2
       exposure_dynamic_framerate: 0  # otherwise the camera drops below 30 fps in dim light

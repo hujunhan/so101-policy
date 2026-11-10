@@ -122,7 +122,7 @@ class RunLog:
 def open_cameras(settings: dict, devices) -> dict:
     from lerobot.cameras.opencv import OpenCVCamera, OpenCVCameraConfig
 
-    from so101_policy.zed_camera import ZedCamera, ZedCameraConfig
+    from so101_policy.zed_camera import ResizedCamera, ResizedCameraConfig, ZedCamera, ZedCameraConfig
 
     for name, cam in settings["cameras"].items():
         for msg in apply_v4l2(devices.cameras[name], cam.get("v4l2", {})):
@@ -130,11 +130,9 @@ def open_cameras(settings: dict, devices) -> dict:
     cams = {}
     for name, cfg in camera_configs(settings, devices.cameras).items():
         kw = {k: v for k, v in cfg.items() if k != "type"}
-        cams[name] = (
-            ZedCamera(ZedCameraConfig(**kw))
-            if cfg["type"] == "zed"
-            else OpenCVCamera(OpenCVCameraConfig(**kw))
-        )
+        kinds = {"zed": (ZedCamera, ZedCameraConfig), "resized": (ResizedCamera, ResizedCameraConfig)}
+        cam_cls, cfg_cls = kinds.get(cfg["type"], (OpenCVCamera, OpenCVCameraConfig))
+        cams[name] = cam_cls(cfg_cls(**kw))
     for c in cams.values():
         c.connect()
     return cams

@@ -124,7 +124,7 @@ check the region in the camera view before any further trial.
   7.4 deg (shoulder) and 4.8 deg (elbow) above where demonstrations start; accepted (DECISIONS 2026-11-09).
   Policies run with SafeArm's step cap at 4 deg per tick (120 deg/s).
 - [x] **Cameras**: ZED 2 left eye, FHD (1920 x 1080 per eye) over UVC, crop x 240-1920 at full height, resized to
-  840 x 540; wrist camera 1280 x 720 MJPG; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
+  840 x 540; wrist camera captured at 1280 x 720 MJPG and resized to 640 x 360; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
   exposure (DECISIONS 2026-11-09); lighting: one Ulanzi UA12 at 10 %, daylight preset.
 - [x] **Servo P gain**: 16 in recording and evaluation (DECISIONS 2026-11-09).
 - [x] **Time limit: 70 s.** The five dry-run demonstrations with the ring box in the light box

@@ -93,8 +93,12 @@ class Devices:
 def test_committed_settings_build_a_valid_command():
     settings = load_settings()
     cams = camera_configs(settings, Devices.cameras)
-    assert cams["zed"]["type"] == "zed" and cams["wrist"]["type"] == "opencv"
+    assert cams["zed"]["type"] == "zed" and cams["wrist"]["type"] == "resized"
     ZedCameraConfig(**{k: v for k, v in cams["zed"].items() if k != "type"})  # the ZED part parses
+    from so101_policy.zed_camera import ResizedCameraConfig
+
+    w = ResizedCameraConfig(**{k: v for k, v in cams["wrist"].items() if k != "type"})
+    assert (w.width, w.height, w.out_width, w.out_height) == (1280, 720, 640, 360)
 
     args = argparse.Namespace(
         repo_id="local/x", root=None, task="Put the blue box in the bowl.", episodes=2,

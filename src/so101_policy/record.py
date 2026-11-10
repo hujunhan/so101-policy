@@ -50,7 +50,7 @@ def camera_configs(settings: dict, paths: dict[str, str]) -> dict[str, dict]:
         out["zed"] = cfg
     if "wrist" in cams:
         w = cams["wrist"]
-        out["wrist"] = {
+        cfg = {
             "type": "opencv",
             "index_or_path": paths["wrist"],
             "fps": fps,
@@ -58,6 +58,10 @@ def camera_configs(settings: dict, paths: dict[str, str]) -> dict[str, dict]:
             "height": w["capture"][1],
             "fourcc": w["fourcc"],
         }
+        if w.get("out_size") is not None and list(w["out_size"]) != list(w["capture"]):
+            cfg["type"] = "resized"
+            cfg["out_width"], cfg["out_height"] = w["out_size"]
+        out["wrist"] = cfg
     return out
 
 
