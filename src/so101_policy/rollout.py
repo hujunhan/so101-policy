@@ -214,7 +214,9 @@ def run_episode(
     log: RunLog,
     video: VideoSink | None,
     stop: threading.Event,
-    stall_deg: float = 15.0,
+    # A joint moving at the 4 deg/tick cap (120 deg/s) reads ~12-16 deg behind its command (servo lag ~0.1 s,
+    # measured in the pilot runs), so 15 deg stopped a free-moving wrist as a 'stall'.
+    stall_deg: float = 25.0,
     stall_s: float = 0.5,
 ) -> str:
     """One episode. Returns how it ended: 'time_limit', 'stopped', or 'stall: <joint>'."""

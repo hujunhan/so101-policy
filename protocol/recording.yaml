@@ -52,8 +52,9 @@ eval:
   region: {origin: [190, -110], u_axis: [140, 0], v_axis: [0, 150]}
   bowl_centre_mm: [250, 170]
   use_yaw: true           # the ring box: yaw in [0, 90) matters (PROTOCOL amendment 2)
-  # The folded rest pose clipped to SafeArm's limits (LeRobot degrees; gripper %): DECISIONS 2026-11-09.
-  start_pose_deg: [8.6, -95.0, 91.8, 76.0, -92.5, 4.5]
+  # Where the demonstrations start (median first frame of local/so101_box, 20 episodes), clipped to SafeArm's
+  # limits (LeRobot degrees; gripper %). PROTOCOL amendment 3: the stored rest pose had the wrist rolled -92.5.
+  start_pose_deg: [-1.1, -95.0, 91.8, 60.8, 5.2, 4.5]
   time_limit_s: 70        # 3 x the median dry-run duration (23.0 s), rounded up to 5 s (PROTOCOL section 7)
 
 # Policy runs on the arm (so101-rollout, so101-eval): SafeArm's step cap per 30 Hz tick (DECISIONS 2026-11-09).

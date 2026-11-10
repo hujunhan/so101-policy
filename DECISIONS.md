@@ -99,9 +99,10 @@ Blue on the black mat is easy to see in both cameras.
 
 ## 2026-11-09: Policy runs start from the clipped rest pose, with a 4 deg step cap
 
-**Decided:** (1) on the arm, a policy starts from the folded rest pose clipped to SafeArm's limits (shoulder
-lift -95.0 instead of -102.4 deg, elbow 91.8 instead of 96.6, gripper 4.5 instead of 0.8 %); demonstrations
-keep starting from the rest pose itself. (2) SafeArm's step cap for policy runs is 4 deg per 30 Hz tick
+**Decided:** (1) on the arm, a policy starts from the demonstrations' folded start pose clipped to SafeArm's
+limits (shoulder lift -95.0 instead of about -103.7 deg, elbow 91.8 instead of 94.6, gripper 4.5 instead of
+1.0 %); demonstrations keep starting from the folded pose itself. (Corrected 2026-11-10, PROTOCOL amendment
+3: the first version used so101-core's stored rest pose, whose wrist roll is 100 deg off the demonstrations'.) (2) SafeArm's step cap for policy runs is 4 deg per 30 Hz tick
 (120 deg/s), set in `protocol/recording.yaml` (`rollout.max_step_deg`).
 
 **Why:** (1) the policy is closed loop and sees where the arm is; a start a few degrees off is the kind of

@@ -118,10 +118,11 @@ check the region in the camera view before any further trial.
   (amendment 2). Checked for the 30 listed states: every box stays in the ZED's view (nearest edge at
   y -125 mm; the view ends near -150) and clear of the gripper resting over the region's near edge (closest:
   trial 13, 10 mm from the gripper tip, which rests 14-20 mm above the table).
-- [x] **Start pose**: the arm's folded rest pose, clipped to SafeArm's joint limits (with its 5 deg margin):
-  pan 8.6, lift -95.0, elbow 91.8, wrist flex 76.0, wrist roll -92.5 deg, gripper 4.5 % (LeRobot units). The
-  rest pose itself has the shoulder at -102.4 and the elbow at 96.6, outside the limits, so policy runs start
-  7.4 deg (shoulder) and 4.8 deg (elbow) above where demonstrations start; accepted (DECISIONS 2026-11-09).
+- [x] **Start pose** (amendment 3): where the demonstrations start, clipped to SafeArm's joint limits (with
+  its 5 deg margin): pan -1.1, lift -95.0, elbow 91.8, wrist flex 60.8, wrist roll 5.2 deg, gripper 4.5 %
+  (LeRobot units; the median first frame of the 20 demonstrations in `local/so101_box`). The folded pose has
+  the shoulder at -103.7 and the elbow at 94.6, outside the limits, so policy runs start 8.7 deg (shoulder)
+  and 2.8 deg (elbow) above where demonstrations start; accepted (DECISIONS 2026-11-09).
   Policies run with SafeArm's step cap at 4 deg per tick (120 deg/s).
 - [x] **Cameras**: ZED 2 left eye, FHD (1920 x 1080 per eye) over UVC, crop x 240-1920 at full height, resized to
   840 x 540; wrist camera captured at 1280 x 720 MJPG and resized to 640 x 360; both 30 fps (`protocol/recording.yaml`). The ZED keeps its automatic
@@ -158,4 +159,16 @@ the light box), before any demonstration for training was recorded and before an
 - **Initial states**: the box looks the same after a quarter turn, as the cube did, so the yaw column of
   `eval_states.csv` is used again (placing tolerance about 5 mm and 5 deg). The list is unchanged.
 - Region, bowl, start pose and cameras are as in section 7.
+
+### Amendment 3, 2026-11-10: the start pose is where the demonstrations start
+
+Made after two pilot runs of a pilot policy (20 demonstrations; not evaluation trials, not on listed states),
+before any evaluation trial.
+
+- **What was wrong**: section 7 took the start pose from the rest pose stored in so101-core's config, which has
+  the wrist rolled to -92.5 deg and flexed to 76 deg. The demonstrations start with the wrist at about +5 deg
+  roll and 61 deg flex. A policy started there first rolls the wrist 100 deg back to where it was trained
+  (both pilot runs did, then stopped on the stall check).
+- **Now**: the median first frame of the demonstrations, clipped to the safety limits (section 7). Policies run
+  from where their training data start; nothing else changes.
 
