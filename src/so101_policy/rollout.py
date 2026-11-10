@@ -335,6 +335,15 @@ def main(argv: list[str] | None = None) -> None:
                 if input().strip() != "yes":
                     print("Not started.")
                     return
+                # The protocol's start pose (the rest pose clipped to the limits), reached slowly, so the
+                # policy does not start with a jump out of the rest pose.
+                sp = settings.get("eval", {}).get("start_pose_deg")
+                if sp:
+                    from so101_core.convert import lerobot_to_rad
+
+                    print("Moving to the start pose (20 deg/s)...")
+                    q_start = lerobot_to_rad(dict(zip(JOINTS, sp, strict=True)), jm)
+                    arm.move_to(q_start, speed_rad_s=np.radians(20))
             images = {n: c.read_latest(max_age_ms=500) for n, c in cams.items()}
             from so101_core.convert import rad_to_lerobot
 
