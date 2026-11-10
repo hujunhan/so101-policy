@@ -151,3 +151,33 @@ def test_rollout_helpers():
         log.frame_age_ms.append({"zed": 20.0})
     text = summarize(log, 30.0)
     assert "30 ticks" in text and "3 ticks over the budget" in text and "frame age zed" in text
+
+
+class _FakeBus:
+    """Feetech-like: writing a goal switches the torque on."""
+
+    def __init__(self, torque):
+        self.torque = dict(torque)
+        self.goal = None
+
+    def sync_read(self, reg, normalize=True, num_retry=0):
+        return dict(self.torque) if reg == "Torque_Enable" else {m: 2048 for m in self.torque}
+
+    def sync_write(self, reg, values, normalize=True):
+        self.goal = values
+        self.torque = {m: 1 for m in self.torque}
+
+    def disable_torque(self, motors=None):
+        for m in motors or list(self.torque):
+            self.torque[m] = 0
+
+
+def test_sync_goal_keeps_torque_state():
+    from so101_policy.record import sync_goal_keep_torque
+
+    limp = _FakeBus({"a": 0, "b": 0})
+    sync_goal_keep_torque(limp)
+    assert limp.goal == {"a": 2048, "b": 2048} and limp.torque == {"a": 0, "b": 0}
+    held = _FakeBus({"a": 1, "b": 1})
+    sync_goal_keep_torque(held)
+    assert held.torque == {"a": 1, "b": 1}

@@ -102,12 +102,23 @@ def pose_differences(leader: dict[str, float], follower: dict[str, float], max_d
     return out
 
 
+def sync_goal_keep_torque(bus) -> None:
+    """Goal = present position on every motor; motors whose torque was off are switched off again."""
+    torque = bus.sync_read("Torque_Enable", normalize=False, num_retry=3)
+    raw = bus.sync_read("Present_Position", normalize=False, num_retry=3)
+    bus.sync_write("Goal_Position", raw, normalize=False)
+    off = [m for m, on in torque.items() if not on]
+    if off:
+        bus.disable_torque(off)
+
+
 def read_start_poses(devices) -> tuple[dict[str, float], dict[str, float]]:
-    """Read both arms without changing torque, and set the follower's goal to its present position.
+    """Read both arms, set the follower's goal to its present position, and leave the torque as it was.
 
     LeRobot's follower connect() enables torque without syncing the goal first: a goal left over from an
-    earlier session would make the arm jump (so101-core, M0 findings). Writing goal = present here, with
-    the torque untouched, removes that. Returns (leader, follower) readings.
+    earlier session would make the arm jump (so101-core, M0 findings). Writing goal = present here removes
+    that. The Feetech servos switch their torque on when a goal is written (checked on this arm 2026-11-09),
+    so a follower that was limp is made limp again. Returns (leader, follower) readings.
     """
     from lerobot.robots.so_follower import SO101Follower, SO101FollowerConfig
     from lerobot.teleoperators.so_leader import SO101Leader, SO101LeaderConfig
@@ -123,8 +134,7 @@ def read_start_poses(devices) -> tuple[dict[str, float], dict[str, float]]:
                 raise RuntimeError(f"{dev} calibration does not match its LeRobot calibration file.")
             readings.append(bus.sync_read("Present_Position", num_retry=3))
             if dev is follower:
-                raw = bus.sync_read("Present_Position", normalize=False, num_retry=3)
-                bus.sync_write("Goal_Position", raw, normalize=False)
+                sync_goal_keep_torque(bus)
         finally:
             bus.disconnect(disable_torque=False)  # leave the torque as it was
     return readings[0], readings[1]
