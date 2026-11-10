@@ -12,10 +12,11 @@ teleoperated demonstrations and measures how well learned policies do it:
 
 Deliverable: a video, a results table and a failure analysis.
 
-> **Status (2026-11-08):** S1 done (task, pre-registered protocol). S2 pipeline working (`so101-record`,
-> `so101-check-dataset`, `so101-replay`). S4 dry run on a public dataset done: ACT trains in ~2 h for 30k steps;
-> 20k steps were enough there; SmolVLA fine-tunes in ~3 h and matches ACT offline. Waiting for the light box: relocate the ZED (`so101-handeye relocate`), the ZED
-> crop, the camera settings and PROTOCOL section 7, then S3.
+> **Status (2026-11-09):** S1 and S2 done. The light box is built, the ZED located in it, and PROTOCOL
+> section 7 is complete: a blue ring box into a grey bowl (amendments 1-2), a 14 x 15 cm region, 70 s time
+> limit; five dry-run demonstrations in the box all succeeded. Evaluation tooling ready (`so101-rollout`,
+> `so101-eval`). On a public dataset ACT trains in ~2 h and SmolVLA fine-tunes in ~3 h with similar offline
+> error. Next: S3, 50-100 demonstrations.
 
 ## What M2 hands over
 
