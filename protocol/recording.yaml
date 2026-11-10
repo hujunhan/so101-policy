@@ -22,7 +22,7 @@ follower:
 scene:
   light: Ulanzi UA12 LED tube, magnetic mount at the centre of the box
   light_brightness_pct: 10
-  light_colour_temp_k: null   # to fill in: the value on the light's display
+  light_colour: daylight preset   # the light's own preset; use the same preset every session
   light_power: null           # to fill in: battery or USB-C (USB-C recommended for long sessions)
 
 cameras:
