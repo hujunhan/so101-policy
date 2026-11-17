@@ -42,7 +42,11 @@ docs/DESIGN.md and docs/THEORY.md say what this repo starts from.
   m3_act_pilot20, 20k steps): pilot runs 1-2 stopped (start pose bug, PROTOCOL amendment 3), 3 failed to grasp,
   4 succeeded twice (README clip). so101-record --display uses our OpenCV preview (rerun hung: hybrid GPU).
   Key listener in rollout/eval only while the policy runs (it swallowed typed input).
-- **Next:** ~30 more demos, mostly in the near third of the region (u < 0.33) and varied yaw; then ACT on all.
+- 2026-11-10: ZED image 9.3 px lower than in the 20 demos (zip-tie mount; drifts when the arm runs, not at rest);
+  left screen open, light ~13 % darker. To do before more demos: rigid mount, realign with a live offset readout
+  (`so101-check-scene`, not written yet), LeRobot image augmentation on for the full run (proposed).
+- 2026-11-17: docs/DESIGN.md and docs/THEORY.md written (state during S3; update at S7).
+- **Next:** fix the ZED mount and realign (above); then ~30 more demos, mostly in the near third of the region (u < 0.33) and varied yaw; then ACT on all.
 
 ## How we work
 - Claude writes and runs most of the code. The user does physical work on the arm, makes the key

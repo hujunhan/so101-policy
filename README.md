@@ -17,6 +17,10 @@ Deliverable: a video, a results table and a failure analysis.
 > trained on them picks and places the box on the arm in part of the region (below). Next: about 30 more
 > demonstrations, mostly near the arm, then train ACT on all of them and run the evaluation (S5).
 
+Design and code structure: [docs/DESIGN.md](docs/DESIGN.md). Theory (behaviour cloning, ACT, SmolVLA, deployment
+shift, the statistics of the protocol): [docs/THEORY.md](docs/THEORY.md). Evaluation rules:
+[docs/PROTOCOL.md](docs/PROTOCOL.md).
+
 ## What M2 hands over
 
 From [so101-calib](https://github.com/hujunhan/so101-calib) (README, "Handed to M3 and M5"):
